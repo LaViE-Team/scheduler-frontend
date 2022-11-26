@@ -5,6 +5,7 @@ import store from './store'
 
 import CoreuiVue from '@coreui/vue'
 import CIcon from '@coreui/icons-vue'
+import 'nprogress/nprogress.css'
 import { iconsSet as icons } from '@/assets/icons'
 import DocsExample from '@/components/DocsExample'
 
