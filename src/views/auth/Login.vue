@@ -56,14 +56,10 @@
                   </CButton>
                 </div>
                 <div class="d-grid gap-2 col-8 mx-auto my-2">
-                  <CButton class="px-8" color="primary" size="lg">
-                    <span>SIGN IN WITH FACEBOOK</span>
-                  </CButton>
+                  <BtnFacebook />
                 </div>
                 <div class="d-grid gap-2 col-8 mx-auto my-2">
-                  <CButton class="px-8" color="danger" size="lg">
-                    <span>SIGN IN WITH EMAIL</span>
-                  </CButton>
+                  <BtnGmail />
                 </div>
                 <div class="d-grid gap-2 col-4 mx-auto my-2">
                   <CButton
@@ -85,30 +81,40 @@
 </template>
 
 <script>
+import BtnFacebook from '@/components/Auth/BtnFacebook.vue'
+import BtnGmail from '@/components/Auth/BtnGmail.vue'
 import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
+import { ref } from '@vue/reactivity'
+import { login } from '@/services/auth'
+import { setAccessToken } from '@/utils/cookies'
 
 export default {
   name: 'Login',
   components: {
     Form,
     Field,
+    BtnFacebook,
+    BtnGmail,
   },
-  data() {
-    const schema = yup.object({
-      username: yup.string().required('User name is required'),
-      password: yup
-        .string()
-        .required('password is required')
-        .min(8, 'password is required'),
-    })
+  setup() {
+    const schema = ref({})
+    const isSubmiting = ref(false)
 
     return {
-      isSubmiting: false,
+      isSubmiting,
       schema,
     }
   },
   methods: {
+    setSchema() {
+      // TODO: add custom condition for bill here
+      this.schema = yup.object({
+        username: yup.string().required('User name is required'),
+        password: yup.string().required('password is required'),
+        // .min(8, 'password is required'),
+      })
+    },
     async onSubmit(values) {
       this.isSubmiting = true
 
@@ -119,24 +125,28 @@ export default {
 
       try {
         // const response = await login(body)
-        await new Promise((resolve) =>
-          setTimeout(() => {
-            console.log(body)
-            resolve()
-          }, 500),
-        )
-        // if (response?.data) {
-        //   setAccessToken(response.data.access_token, {
-        //     expires: new Date(Date.now() + response.data.expires_in * 1000),
-        //   })
+        // await new Promise((resolve) =>
+        //   setTimeout(() => {
+        //     console.log(body)
+        //     resolve()
+        //   }, 500),
+        // )
+        const response = await login(body)
 
-        //   this.$router.replace({ name: 'Home' })
-        // }
-        this.$router.replace({ name: 'Homepage' })
+        if (response?.data) {
+          setAccessToken(response.data.access_token, {
+            expires: new Date(Date.now() + response.data.expires_in * 1000),
+          })
+
+          this.$router.replace({ name: 'Home' })
+        }
       } finally {
         this.isSubmiting = false
       }
     },
+  },
+  created() {
+    this.setSchema()
   },
 }
 </script>
