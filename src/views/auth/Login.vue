@@ -132,7 +132,7 @@ export default {
 
         //   this.$router.replace({ name: 'Home' })
         // }
-        this.$router.replace({ name: 'Home' })
+        this.$router.replace({ name: 'Homepage' })
       } finally {
         this.isSubmiting = false
       }
