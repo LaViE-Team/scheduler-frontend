@@ -71,14 +71,10 @@
                   </CButton>
                 </div>
                 <div class="d-grid gap-2 col-8 mx-auto my-2">
-                  <CButton class="px-8" color="primary" size="lg">
-                    <span>SIGN IN WITH FACEBOOK</span>
-                  </CButton>
+                  <BtnFacebook />
                 </div>
                 <div class="d-grid gap-2 col-8 mx-auto my-2">
-                  <CButton class="px-8" color="danger" size="lg">
-                    <span>SIGN IN WITH EMAIL</span>
-                  </CButton>
+                  <BtnGmail />
                 </div>
                 <div class="d-grid gap-2 col-4 mx-auto my-2">
                   <CButton
@@ -100,6 +96,8 @@
 </template>
 
 <script>
+import BtnFacebook from '@/components/Auth/BtnFacebook.vue'
+import BtnGmail from '@/components/Auth/BtnGmail.vue'
 import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
 
@@ -108,6 +106,8 @@ export default {
   components: {
     Form,
     Field,
+    BtnFacebook,
+    BtnGmail,
   },
   data() {
     const schema = yup.object({
