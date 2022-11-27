@@ -16,6 +16,18 @@ export default createStore({
       state.sidebarVisible = payload.value
     },
   },
-  actions: {},
+  actions: {
+    toggleSidebar(context) {
+      return context.commit('toggleSidebar')
+    },
+    toggleUnfoldable(context) {
+      return context.commit('toggleUnfoldable')
+    },
+    updateSidebarVisible(context, payload) {
+      return context.commit('updateSidebarVisible', {
+        ...payload,
+      })
+    },
+  },
   modules: {},
 })
