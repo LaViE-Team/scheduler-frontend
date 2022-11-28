@@ -4,11 +4,13 @@
   </CButton>
 </template>
 <script>
+import { loginFB } from '@/services/auth'
+
 export default {
   name: 'BtnFacebook',
   methods: {
     onSubmit() {
-      console.log(1)
+      loginFB()
     },
   },
 }

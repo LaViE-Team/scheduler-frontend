@@ -7,9 +7,13 @@ import Router from '@/router'
 const toast = useToast()
 
 const service = axios.create({
-  baseURL: process.env.API_URL,
+  baseURL: process.env.VUE_APP_API_URL,
+  withCredentials: false,
   headers: {
     'Content-Type': 'application/json',
+    accept: '*/*',
+    'X-Requested-With': 'XMLHttpRequest',
+    'Access-Control-Allow-Origin': '*',
   },
 })
 

@@ -12,7 +12,6 @@
     "
   >
     <CSidebarBrand class="bg-white border">
-      <img :src="logo" class="img-fluid sidebar-brand-full" />
       <img :src="logoSquare" class="img-fluid sidebar-brand-narrow" />
     </CSidebarBrand>
     <AppSidebarNav />
@@ -24,7 +23,7 @@ import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { AppSidebarNav } from './AppSidebarNav'
 import { logoNegative } from '@/assets/brand/logo-negative'
-import { logo } from '@/assets/brand/company.jpg'
+
 import { sygnet } from '@/assets/brand/sygnet'
 export default {
   name: 'AppSidebar',
@@ -35,7 +34,7 @@ export default {
     const store = useStore()
     return {
       logoNegative,
-      logo,
+
       sygnet,
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),

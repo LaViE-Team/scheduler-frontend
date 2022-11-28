@@ -4,11 +4,13 @@
   </CButton>
 </template>
 <script>
+import { loginGG } from '@/services/auth'
+
 export default {
   name: 'BtnGmail',
   methods: {
     onSubmit() {
-      console.log(1)
+      loginGG()
     },
   },
 }
