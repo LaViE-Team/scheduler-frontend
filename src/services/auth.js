@@ -8,6 +8,14 @@ export function login(data) {
   })
 }
 
+export function register(data) {
+  return request({
+    url: '/auth/register',
+    method: 'post',
+    data: data,
+  })
+}
+
 export function loginFB() {
   return request({
     url: '/auth/facebook',

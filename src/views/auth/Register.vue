@@ -100,6 +100,9 @@ import BtnFacebook from '@/components/Auth/BtnFacebook.vue'
 import BtnGmail from '@/components/Auth/BtnGmail.vue'
 import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
+import { ref } from '@vue/reactivity'
+import { register } from '@/services/auth'
+import { useToast } from 'vue-toastification'
 
 export default {
   name: 'Register',
@@ -109,54 +112,60 @@ export default {
     BtnFacebook,
     BtnGmail,
   },
-  data() {
-    const schema = yup.object({
-      username: yup.string().required('User name is required'),
-      password: yup
-        .string()
-        .required('password is required')
-        .min(8, 'password is required'),
-      confirm_password: yup
-        .string()
-        .required('confirm password is required')
-        // .oneOf([yup.ref('password'), null], "Passwords don't match!")
-        .min(8, 'password is required'),
-    })
+  setup() {
+    const schema = ref({})
+    const isSubmiting = ref(false)
+    const toast = useToast()
 
     return {
-      isSubmiting: false,
+      isSubmiting,
       schema,
+      toast,
     }
   },
   methods: {
+    setSchema() {
+      // TODO: add custom condition for bill here
+      this.schema = yup.object({
+        username: yup.string().required('User name is required'),
+        password: yup.string().required('password is required'),
+        // .min(8, 'password is required'),
+        confirm_password: yup
+          .string()
+          .required('confirm password is required')
+          .oneOf([yup.ref('password'), null], "Passwords don't match!"),
+        // .min(8, 'password is required'),
+      })
+    },
     async onSubmit(values) {
       this.isSubmiting = true
 
       const body = {
         username: values.username,
         password: values.password,
-        confirm_password: values.confirm_password,
+        email: values.username,
+        service_pack: 0,
       }
 
       try {
-        // const response = await login(body)
-        await new Promise((resolve) =>
-          setTimeout(() => {
-            console.log(body)
-            resolve()
-          }, 500),
-        )
-        // if (response?.data) {
-        //   setAccessToken(response.data.access_token, {
-        //     expires: new Date(Date.now() + response.data.expires_in * 1000),
-        //   })
-
-        //   this.$router.replace({ name: 'Home' })
-        // }
+        // await new Promise((resolve) =>
+        //   setTimeout(() => {
+        //     console.log(body)
+        //     resolve()
+        //   }, 500),
+        // )
+        const response = await register(body)
+        if (response.success) {
+          this.toast.success('Create account success')
+          this.$router.replace({ name: 'Login' })
+        }
       } finally {
         this.isSubmiting = false
       }
     },
+  },
+  created() {
+    this.setSchema()
   },
 }
 </script>

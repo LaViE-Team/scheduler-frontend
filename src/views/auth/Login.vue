@@ -133,9 +133,10 @@ export default {
         // )
         const response = await login(body)
 
-        if (response?.data) {
-          setAccessToken(response.data.access_token, {
-            expires: new Date(Date.now() + response.data.expires_in * 1000),
+        if (response) {
+          console.log(response)
+          setAccessToken(response.access_token, {
+            expires: new Date(Date.now() + response.expires_in * 1000),
           })
 
           this.$router.replace({ name: 'Home' })
