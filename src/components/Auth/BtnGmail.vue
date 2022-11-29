@@ -1,16 +1,27 @@
 <template>
-  <CButton class="px-8" color="danger" size="lg" @click="onSubmit">
+  <CButton class="px-8" color="danger" size="lg" @click="login">
     <span>SIGN IN WITH GMAIL</span>
   </CButton>
 </template>
 <script>
-import { loginGG } from '@/services/auth'
+// import { loginGG } from '@/services/auth'
+import { ref } from '@vue/reactivity'
+import { googleTokenLogin } from 'vue3-google-login'
 
 export default {
   name: 'BtnGmail',
+  setup() {
+    const user = ref({})
+    return {
+      user,
+    }
+  },
   methods: {
-    onSubmit() {
-      loginGG()
+    async login() {
+      await googleTokenLogin().then((response) => {
+        console.log('Handle the response', response)
+      })
+      this.$router.replace({ name: 'Home' })
     },
   },
 }

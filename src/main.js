@@ -14,8 +14,13 @@ import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import { iconsSet as icons } from '@/assets/icons'
 import DocsExample from '@/components/DocsExample'
+import vue3GoogleLogin from 'vue3-google-login'
 
 const app = createApp(App)
+app.use(vue3GoogleLogin, {
+  clientId:
+    '764381580897-peebj8fqbrofs333krpi8ipokuv5vpjl.apps.googleusercontent.com',
+})
 app.use(store)
 app.use(router)
 app.use(CoreuiVue)
