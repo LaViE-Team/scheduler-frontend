@@ -4,7 +4,7 @@
   </CButton>
 </template>
 <script>
-// import { loginGG } from '@/services/auth'
+import { loginGG } from '@/services/auth'
 import { ref } from '@vue/reactivity'
 import { googleTokenLogin } from 'vue3-google-login'
 
@@ -19,7 +19,7 @@ export default {
   methods: {
     async login() {
       await googleTokenLogin().then((response) => {
-        console.log('Handle the response', response)
+        loginGG({ access_token: response.access_token })
       })
       this.$router.replace({ name: 'Home' })
     },

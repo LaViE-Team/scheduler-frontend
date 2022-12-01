@@ -23,9 +23,10 @@ export function loginFB() {
   })
 }
 
-export function loginGG() {
+export function loginGG(data) {
   return request({
     url: '/auth/google',
-    method: 'get',
+    method: 'post',
+    data: data,
   })
 }
