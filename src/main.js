@@ -15,6 +15,9 @@ import 'vue-toastification/dist/index.css'
 import { iconsSet as icons } from '@/assets/icons'
 import DocsExample from '@/components/DocsExample'
 import vue3GoogleLogin from 'vue3-google-login'
+import { initFacebookSdk } from './services/fbsdk'
+
+initFacebookSdk()
 
 const app = createApp(App)
 app.use(vue3GoogleLogin, {

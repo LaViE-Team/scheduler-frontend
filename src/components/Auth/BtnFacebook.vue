@@ -4,13 +4,18 @@
   </CButton>
 </template>
 <script>
-import { loginFB } from '@/services/auth'
+// import { loginFB } from '@/services/auth'
 
 export default {
   name: 'BtnFacebook',
   methods: {
-    onSubmit() {
-      loginFB()
+    async onSubmit() {
+      await window.FB.login()
+      await window.FB.getLoginStatus(({ authResponse }) => {
+        if (authResponse) {
+          console.log(authResponse)
+        }
+      })
     },
   },
 }
