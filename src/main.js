@@ -18,14 +18,14 @@ import vue3GoogleLogin from 'vue3-google-login'
 
 const app = createApp(App)
 app.use(vue3GoogleLogin, {
-  clientId: process.env.VUE_APP_GG_CLIENT_ID,
+    clientId: process.env.VUE_APP_GG_CLIENT_ID,
 })
 app.use(store)
 app.use(router)
 app.use(CoreuiVue)
 app.use(Toast, {
-  pauseOnFocusLoss: false,
-  hideProgressBar: true,
+    pauseOnFocusLoss: false,
+    hideProgressBar: true,
 })
 app.provide('icons', icons)
 app.component('CIcon', CIcon)

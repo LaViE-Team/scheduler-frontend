@@ -6,10 +6,10 @@ import CChartPieExample from './CChartPieExample'
 import CChartPolarAreaExample from './CChartPolarAreaExample'
 
 export {
-  CChartLineExample,
-  CChartBarExample,
-  CChartDoughnutExample,
-  CChartRadarExample,
-  CChartPieExample,
-  CChartPolarAreaExample,
+    CChartLineExample,
+    CChartBarExample,
+    CChartDoughnutExample,
+    CChartRadarExample,
+    CChartPieExample,
+    CChartPolarAreaExample,
 }
