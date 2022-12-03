@@ -124,13 +124,6 @@ export default {
       }
 
       try {
-        // const response = await login(body)
-        // await new Promise((resolve) =>
-        //   setTimeout(() => {
-        //     console.log(body)
-        //     resolve()
-        //   }, 500),
-        // )
         const response = await login(body)
 
         if (response) {

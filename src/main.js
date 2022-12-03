@@ -21,8 +21,7 @@ initFacebookSdk()
 
 const app = createApp(App)
 app.use(vue3GoogleLogin, {
-  clientId:
-    '764381580897-peebj8fqbrofs333krpi8ipokuv5vpjl.apps.googleusercontent.com',
+  clientId: process.env.VUE_APP_GG_CLIENT_ID,
 })
 app.use(store)
 app.use(router)
