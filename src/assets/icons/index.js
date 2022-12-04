@@ -173,3 +173,59 @@ export const iconsSet = Object.assign(
     cibCcAmex,
   },
 )
+/* import the fontawesome core */
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+/* import specific icons */
+import {
+  faBars,
+  faGlobe,
+  faBell,
+  faUser,
+  faDesktop,
+  faCommentDots,
+  faRightFromBracket,
+  faSort,
+  faSortUp,
+  faSortDown,
+  faEye,
+  faPencil,
+  faTrash,
+  faMagnifyingGlass,
+  faRotateRight,
+  faPlus,
+  faChevronLeft,
+  faHouse,
+  faFlag,
+  faClipboard,
+  faTriangleExclamation,
+  faXmark,
+  faFileSignature,
+} from '@fortawesome/free-solid-svg-icons'
+
+/* add icons to the library */
+library.add(
+  faBars,
+  faGlobe,
+  faBell,
+  faUser,
+  faDesktop,
+  faCommentDots,
+  faRightFromBracket,
+  faSort,
+  faSortUp,
+  faSortDown,
+  faEye,
+  faPencil,
+  faTrash,
+  faMagnifyingGlass,
+  faRotateRight,
+  faPlus,
+  faChevronLeft,
+  faHouse,
+  faFlag,
+  faClipboard,
+  faTriangleExclamation,
+  faXmark,
+  faFileSignature,
+)
