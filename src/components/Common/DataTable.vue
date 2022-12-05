@@ -49,7 +49,7 @@
   <!-- Table -->
   <div class="mt-3 shadow-sm" id="datatable">
     <CTable responsive :hover="!isLoading && datas.length > 0" class="m-0">
-      <CTableHead color="light">
+      <CTableHead color="light" v-if="!hideHeader">
         <CTableRow>
           <CTableHeaderCell
             v-if="!hideIndex"
@@ -137,6 +137,7 @@
                 <div class="d-flex align-items-center">
                   <slot name="actions(view)" :data="data">
                     <CButton
+                      v-if="hasView"
                       color="light"
                       shape="rounded-pill"
                       @click="handleCellClick(data)"
@@ -172,6 +173,22 @@
               </slot>
             </CTableDataCell>
           </CTableRow>
+          <CTableRow v-if="hasAdd">
+            <CTableDataCell
+              class="text-center"
+              :colspan="columns.length + (hideActions ? 0 : 1)"
+            >
+              <CButton
+                @click="handleAddClick"
+                type="button"
+                color="success"
+                shape="rounded-pill"
+                class="ms-2 text-light"
+              >
+                <font-awesome-icon icon="fa-solid fa-plus" />
+              </CButton>
+            </CTableDataCell>
+          </CTableRow>
         </template>
 
         <template v-else>
@@ -181,7 +198,7 @@
                 <Loading />
               </template>
               <template v-if="!isLoading && datas.length < 1">
-                <div class="text-center">NoData</div>
+                <div class="text-center">No Data</div>
               </template>
             </CTableHeaderCell>
           </CTableRow>
@@ -269,6 +286,11 @@ export default {
       type: Array,
       required: false,
     },
+    hasView: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     hasEdit: {
       type: Boolean,
       required: false,
@@ -279,7 +301,17 @@ export default {
       required: false,
       default: false,
     },
+    hasAdd: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     clickable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hideHeader: {
       type: Boolean,
       required: false,
       default: false,
@@ -355,6 +387,11 @@ export default {
         this.$emit('viewClick', cell)
       }
     },
+    handleViewClick(cell) {
+      if (this.hasView) {
+        this.$emit('viewClick', cell)
+      }
+    },
     handleEditClick(cell) {
       if (this.hasEdit) {
         this.$emit('editClick', cell)
@@ -363,6 +400,11 @@ export default {
     handleDeleteClick(cell) {
       if (this.hasDelete) {
         this.$emit('deleteClick', cell)
+      }
+    },
+    handleAddClick() {
+      if (this.hasAdd) {
+        this.$emit('addClick')
       }
     },
     onSubmit(values) {
@@ -406,11 +448,11 @@ export default {
 </script>
 
 <style scoped>
-#datatable {
-  max-height: 50vh;
-}
-
 thead > tr > th {
   top: 0;
+}
+
+td {
+  padding: 8px 4px 8px 4px;
 }
 </style>
