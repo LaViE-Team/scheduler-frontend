@@ -50,6 +50,7 @@
         hideIndex
         clickable
         @viewClick="handleView"
+        hasView="true"
         @editClick="handleEdit"
         :hasEdit="true"
         @deleteClick="handleDelete"
@@ -63,22 +64,36 @@
         </template>
         <template #column(time)="{ value }">
           <p class="m-0" v-for="data in value" :key="data.time">
-            {{ data.time }}
+            {{ data.day }} {{ data.startTime }}-{{ data.endTime }}
           </p>
         </template>
       </DataTable>
     </CCardBody>
   </CCard>
+
+  <div>
+    <EditSubjectModal
+      :visible="showEditSubjectModal"
+      @close="toggleEditSubject"
+      @editClass="toggleEditClass"
+    />
+
+    <EditClassModal :visible="showEditClassModal" @close="toggleEditClass" />
+  </div>
 </template>
 
 <script>
 import { ref } from '@vue/reactivity'
 import DataTable from '@/components/Common/DataTable.vue'
+import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
+import EditClassModal from '@/components/Modals/EditClassModal.vue'
 
 export default {
   name: 'Schedule',
   components: {
     DataTable,
+    EditSubjectModal,
+    EditClassModal,
   },
   setup() {
     const value = ref({})
@@ -86,11 +101,15 @@ export default {
     const columns = ref([])
     const queries = ref({})
 
+    const showEditSubjectModal = ref(false)
+    const showEditClassModal = ref(false)
     return {
       value,
       datas,
       columns,
       queries,
+      showEditSubjectModal,
+      showEditClassModal,
     }
   },
   methods: {
@@ -118,14 +137,20 @@ export default {
           ],
         },
         {
-          subject: 'C BAsic',
+          subject: 'C Basic',
           class_code: [{ name: 'IT123' }, { name: 'IT122' }],
-          time: [{ time: 'Wed 6h-9h' }, { time: 'Wed 6h-9h' }],
+          time: [
+            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
+            { day: 'Tue', startTime: '06:45', endTime: '09:00' },
+          ],
         },
         {
-          subject: 'C BAsic',
+          subject: 'C Basic',
           class_code: [{ name: 'IT123' }, { name: 'IT122' }],
-          time: [{ time: 'Wed 6h-9h' }, { time: 'Wed 6h-9h' }],
+          time: [
+            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
+            { day: 'Tue', startTime: '06:45', endTime: '09:00' },
+          ],
         },
       ]
     },
@@ -137,6 +162,8 @@ export default {
     },
     handleEdit() {
       console.log('edit')
+      this.toggleEditSubject()
+      this.editedSubject = {}
     },
     handleDelete() {
       console.log('delete')
@@ -145,6 +172,14 @@ export default {
       console.log(1)
       this.$router.push({ name: 'ScheduleInfo' })
     },
+    toggleEditSubject() {
+      this.showEditSubjectModal = !this.showEditSubjectModal
+    },
+    toggleEditClass() {
+      this.toggleEditSubject()
+      this.showEditClassModal = !this.showEditClassModal
+    },
+
     async fetchLanguages(query) {
       // From: https://www.back4app.com/database/paul-datasets/list-of-all-programming-languages/get-started/javascript/rest-api/fetch?objectClassSlug=dataset
 
@@ -203,3 +238,5 @@ export default {
   },
 }
 </script>
+
+<style></style>
