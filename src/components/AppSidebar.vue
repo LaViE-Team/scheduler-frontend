@@ -11,11 +11,7 @@
     "
   >
     <CSidebarBrand class="bg-white">
-      <img
-        :src="logo"
-        class="img-fluid sidebar-brand-full"
-        style="width: 500px; height: auto"
-      />
+      <img :src="logo" class="img-fluid sidebar-brand-full" />
       <img :src="logoSquare" class="img-fluid sidebar-brand-narrow" />
     </CSidebarBrand>
     <AppSidebarNav />
@@ -26,8 +22,8 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { AppSidebarNav } from './AppSidebarNav'
-import logo from '@/assets/images/vue.jpg'
-import logoSquare from '@/assets/images/vue400.jpg'
+import logo from '@/assets/images/logo.png'
+import logoSquare from '@/assets/images/logo-square.png'
 
 export default {
   name: 'AppSidebar',
