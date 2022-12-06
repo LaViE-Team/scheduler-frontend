@@ -1,7 +1,6 @@
 <template>
   <CSidebar
     position="fixed"
-    :unfoldable="sidebarUnfoldable"
     :visible="sidebarVisible"
     @visible-change="
       (event) =>
@@ -11,7 +10,12 @@
         })
     "
   >
-    <CSidebarBrand class="bg-white border">
+    <CSidebarBrand class="bg-white">
+      <img
+        :src="logo"
+        class="img-fluid sidebar-brand-full"
+        style="width: 500px; height: auto"
+      />
       <img :src="logoSquare" class="img-fluid sidebar-brand-narrow" />
     </CSidebarBrand>
     <AppSidebarNav />
@@ -22,9 +26,9 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { AppSidebarNav } from './AppSidebarNav'
-import { logoNegative } from '@/assets/brand/logo-negative'
+import logo from '@/assets/images/vue.jpg'
+import logoSquare from '@/assets/images/vue400.jpg'
 
-import { sygnet } from '@/assets/brand/sygnet'
 export default {
   name: 'AppSidebar',
   components: {
@@ -33,11 +37,9 @@ export default {
   setup() {
     const store = useStore()
     return {
-      logoNegative,
-
-      sygnet,
-      sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
-      sidebarVisible: computed(() => store.state.sidebarVisible),
+      logo,
+      logoSquare,
+      sidebarVisible: computed(() => store.getters.sidebarVisible),
     }
   },
 }

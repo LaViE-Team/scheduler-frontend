@@ -3,18 +3,18 @@ export default [
     component: 'CNavItem',
     name: 'Homepage',
     to: '/homepage',
-    icon: 'cil-home',
+    icon: 'fa-solid fa-home',
   },
   {
     component: 'CNavItem',
     name: 'Schedule',
     to: '/schedule',
-    icon: 'cil-spreadsheet',
+    icon: 'fa-solid fa-file-lines',
   },
   {
     component: 'CNavItem',
     name: 'Acount',
     to: '/account',
-    icon: 'cil-user',
+    icon: 'fa-solid fa-user',
   },
 ]

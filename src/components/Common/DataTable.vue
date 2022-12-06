@@ -47,8 +47,8 @@
   </TableFilter>
 
   <!-- Table -->
-  <div class="mt-3 shadow-sm" id="datatable">
-    <CTable responsive :hover="!isLoading && datas.length > 0" class="m-0">
+  <div class="mt-3 overflow-auto shadow-sm" id="datatable">
+    <CTable bordered>
       <CTableHead color="light">
         <CTableRow>
           <CTableHeaderCell
@@ -105,7 +105,7 @@
           <CTableRow
             v-for="(data, index) in datas"
             :key="data.id"
-            class="align-middle"
+            class="align-top"
           >
             <CTableHeaderCell v-if="!hideIndex" scope="row">
               <slot
@@ -132,7 +132,7 @@
               </slot>
             </CTableDataCell>
 
-            <CTableDataCell v-if="!hideActions">
+            <CTableDataCell v-if="!hideActions" class="align-middle">
               <slot name="actions" :data="data">
                 <div class="d-flex align-items-center">
                   <slot name="actions(view)" :data="data">
@@ -191,32 +191,31 @@
   </div>
 
   <!-- PerPage and Pagination -->
-  <div
-    v-if="!hideItemPerPageSelector || !hidePagination"
-    class="d-flex flex-column flex-sm-row justify-content-between"
-  >
-    <div class="mt-3 d-flex justify-content-center align-items-center">
-      <template v-if="!hideItemPerPageSelector">
-        <slot name="itemPerPage">
-          <ItemsPerPageSelect
-            :selected="itemsPerPage"
-            @itemSelect="onUpdateItemsPerPage"
-          />
-        </slot>
-      </template>
-    </div>
-
-    <div class="mt-3 d-flex justify-content-center align-items-center ml-auto">
-      <template v-if="!hidePagination">
-        <slot name="pagination">
-          <Pagination
-            :pages="pages"
-            @pageChange="handlePageChange"
-            :currentPage="currentPage"
-          />
-        </slot>
-      </template>
-    </div>
+  <div>
+    <CRow
+      v-if="!hideItemPerPageSelector || !hidePagination"
+      class="d-flex flex-column flex-sm-row"
+    >
+      <CCol xs="2"></CCol>
+      <CCol xs="8">
+        <div class="mt-3 d-flex justify-content-center align-items-center">
+          <template v-if="!hidePagination">
+            <slot name="pagination">
+              <Pagination
+                :pages="pages"
+                @pageChange="handlePageChange"
+                :currentPage="currentPage"
+              />
+            </slot>
+          </template>
+        </div>
+      </CCol>
+      <CCol class="mt-3 d-grid gap-2 d-md-flex justify-content-md-end" xs="2"
+        ><CButton color="info" @click="handleClickButton()">{{
+          buttonDone
+        }}</CButton></CCol
+      >
+    </CRow>
   </div>
 </template>
 
@@ -224,7 +223,7 @@
 import { Field } from 'vee-validate'
 import TableFilter from '@/components/Common/Filters.vue'
 import Pagination from '@/components/Common/Pagination.vue'
-import ItemsPerPageSelect from '@/components/Common/ItemsPerPageSelect.vue'
+// import ItemsPerPageSelect from '@/components/Common/ItemsPerPageSelect.vue'
 import { ref } from '@vue/reactivity'
 
 export default {
@@ -233,9 +232,8 @@ export default {
     Field,
     TableFilter,
     Pagination,
-    ItemsPerPageSelect,
   },
-  emits: ['viewClick', 'editClick', 'deleteClick'],
+  emits: ['viewClick', 'editClick', 'deleteClick', 'clickButton'],
   props: {
     columns: {
       type: Array,
@@ -309,6 +307,11 @@ export default {
       required: false,
       default: false,
     },
+    buttonDone: {
+      type: String,
+      required: false,
+      default: 'Done',
+    },
   },
   setup() {
     const currentPage = ref(1)
@@ -365,6 +368,9 @@ export default {
         this.$emit('deleteClick', cell)
       }
     },
+    handleClickButton() {
+      this.$emit('clickButton')
+    },
     onSubmit(values) {
       if (!this.hideFilters) {
         this.$router.push({
@@ -406,10 +412,6 @@ export default {
 </script>
 
 <style scoped>
-#datatable {
-  max-height: 50vh;
-}
-
 thead > tr > th {
   top: 0;
 }

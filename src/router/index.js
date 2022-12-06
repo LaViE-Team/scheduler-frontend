@@ -13,14 +13,14 @@ const router = createRouter({
   },
 })
 
-router.beforeEach((to) => {
+router.beforeEach(() => {
   // Start NProgress UI
   nProgress.start()
 
   // Remove last trailing slashes
-  if (/\/{1,}$/.test(to.fullPath)) {
-    return to.fullPath.replace(/\/{1,}$/, '')
-  }
+  // if (/\/{1,}$/.test(to.fullPath)) {
+  //   return to.fullPath.replace(/\/{1,}$/, '')
+  // }
 })
 
 router.afterEach(() => {

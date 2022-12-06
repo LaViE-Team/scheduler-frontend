@@ -5,7 +5,7 @@
       <CCardTitle component="h1" class="mb-4 text-center"
         >Subject Information</CCardTitle
       >
-      <CRow class="d-flex mb-3">
+      <CRow class="d-flex">
         <CCol xs="7" class="d-grid gap-2 d-md-flex justify-content-md-start">
           <CDropdown color="primary">
             <CDropdownToggle color="primary">Import </CDropdownToggle>
@@ -21,7 +21,7 @@
         </CCol>
         <CCol xs="5">
           <CRow>
-            <CCol xs="4" class="d-grid gap-2 d-md-flex justify-content-md-end"
+            <CCol xs="8" class="d-grid gap-2 d-md-flex justify-content-md-end"
               ><Multiselect
                 v-model="value"
                 placeholder="Subject"
@@ -43,20 +43,22 @@
       <DataTable
         :columns="columns"
         :datas="datas"
+        :pages="pages"
+        :queries="queries"
         hideFilters
         hideItemPerPageSelector
-        hidePagination
         hideIndex
         clickable
         @viewClick="handleView"
         @editClick="handleEdit"
-        hasEdit="true"
+        :hasEdit="true"
         @deleteClick="handleDelete"
-        hasDelete="true"
+        :hasDelete="true"
+        @clickButton="clickDone"
       >
         <template #column(class_code)="{ value }">
           <p class="m-0" v-for="data in value" :key="data.name">
-            {{ data.name }}
+            {{ data.name }} <br v-if="!data.name" />
           </p>
         </template>
         <template #column(time)="{ value }">
@@ -82,11 +84,13 @@ export default {
     const value = ref({})
     const datas = ref([])
     const columns = ref([])
+    const queries = ref({})
 
     return {
       value,
       datas,
       columns,
+      queries,
     }
   },
   methods: {
@@ -98,11 +102,20 @@ export default {
       ]
     },
     setDatas() {
+      this.pages = 10
       this.datas = [
         {
           subject: 'C BAsic',
-          class_code: [{ name: 'IT123' }, { name: 'IT122' }],
-          time: [{ time: 'Wed 6h-9h' }, { time: 'Wed 6h-9h' }],
+          class_code: [
+            { name: 'IT123', time: 'Wed 6h-9h' },
+            { name: '', time: 'Thur 6h-9h' },
+            { name: 'IT122', time: 'Wed 6h-9h' },
+          ],
+          time: [
+            { time: '- Wed 6h-9h' },
+            { time: '- Thur 6h-9h' },
+            { time: 'Wed 6h-9h' },
+          ],
         },
         {
           subject: 'C BAsic',
@@ -116,6 +129,9 @@ export default {
         },
       ]
     },
+    setQueries() {
+      this.queries = this.$route.query
+    },
     handleView() {
       console.log('view')
     },
@@ -124,6 +140,10 @@ export default {
     },
     handleDelete() {
       console.log('delete')
+    },
+    clickDone() {
+      console.log(1)
+      this.$router.push({ name: 'ScheduleInfo' })
     },
     async fetchLanguages(query) {
       // From: https://www.back4app.com/database/paul-datasets/list-of-all-programming-languages/get-started/javascript/rest-api/fetch?objectClassSlug=dataset
@@ -166,9 +186,20 @@ export default {
       })
     },
   },
-  created() {
+
+  async created() {
     this.setColumns()
+    this.setQueries()
     this.setDatas()
+    this.$watch(
+      () => this.$route.query,
+      async () => {
+        if (this.$route.name === 'SubjectInfo') {
+          this.setQueries()
+          await this.setDatas()
+        }
+      },
+    )
   },
 }
 </script>

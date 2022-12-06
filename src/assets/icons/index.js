@@ -201,6 +201,8 @@ import {
   faTriangleExclamation,
   faXmark,
   faFileSignature,
+  faFileExcel,
+  faFileLines,
 } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
@@ -228,4 +230,6 @@ library.add(
   faTriangleExclamation,
   faXmark,
   faFileSignature,
+  faFileExcel,
+  faFileLines,
 )

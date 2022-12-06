@@ -7,7 +7,7 @@ const routes = [
     path: '/',
     name: 'Home',
     component: DefaultLayout,
-    redirect: '/homepage',
+    redirect: { name: 'Homepage' },
     children: [
       {
         path: '/homepage',
@@ -17,7 +17,24 @@ const routes = [
       {
         path: '/schedule',
         name: 'Schedule',
-        component: () => import('@/views/schedule/Schedule.vue'),
+        component: {
+          render() {
+            return h(resolveComponent('router-view'))
+          },
+        },
+        redirect: { name: 'SubjectInfo' },
+        children: [
+          {
+            path: '',
+            name: 'SubjectInfo',
+            component: () => import('@/views/schedule/Schedule.vue'),
+          },
+          {
+            path: 'info',
+            name: 'ScheduleInfo',
+            component: () => import('@/views/schedule/ScheduleInfo.vue'),
+          },
+        ],
       },
       {
         path: '/account',

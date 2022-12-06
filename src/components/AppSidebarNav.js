@@ -68,9 +68,9 @@ const AppSidebarNav = defineComponent({
           },
           {
             togglerContent: () => [
-              h(resolveComponent('CIcon'), {
-                customClassName: 'nav-icon',
-                name: item.icon,
+              h(resolveComponent('font-awesome-icon'), {
+                class: 'nav-icon',
+                icon: item.icon,
               }),
               item.name,
             ],
@@ -84,39 +84,29 @@ const AppSidebarNav = defineComponent({
             RouterLink,
             {
               to: item.to,
-              custom: true,
+              class: 'nav-link',
+              activeClass: 'active',
             },
             {
-              default: (props) =>
-                h(
-                  resolveComponent(item.component),
-                  {
-                    active: props.isActive,
-                    href: props.href,
-                    onClick: () => props.navigate(),
-                  },
-                  {
-                    default: () => [
-                      item.icon &&
-                        h(resolveComponent('CIcon'), {
-                          customClassName: 'nav-icon',
-                          name: item.icon,
-                        }),
-                      item.name,
-                      item.badge &&
-                        h(
-                          CBadge,
-                          {
-                            class: 'ms-auto',
-                            color: item.badge.color,
-                          },
-                          {
-                            default: () => item.badge.text,
-                          },
-                        ),
-                    ],
-                  },
-                ),
+              default: () => [
+                item.icon &&
+                  h(resolveComponent('font-awesome-icon'), {
+                    class: 'nav-icon',
+                    icon: item.icon,
+                  }),
+                item.name,
+                item.badge &&
+                  h(
+                    CBadge,
+                    {
+                      class: 'ms-auto',
+                      color: item.badge.color,
+                    },
+                    {
+                      default: () => item.badge.text,
+                    },
+                  ),
+              ],
             },
           )
         : h(
