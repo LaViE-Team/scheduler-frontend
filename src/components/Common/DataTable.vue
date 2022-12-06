@@ -252,7 +252,7 @@ export default {
     Pagination,
     ItemsPerPageSelect,
   },
-  emits: ['viewClick', 'editClick', 'deleteClick'],
+  emits: ['viewClick', 'editClick', 'deleteClick', 'addClick'],
   props: {
     columns: {
       type: Array,

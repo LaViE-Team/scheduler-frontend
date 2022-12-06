@@ -3,9 +3,18 @@
     <CForm>
       <CModalBody>
         <CRow class="mb-4">
-          <CCol class="col-sm-3 py-1 ps-3 fw-semibold"> Subject </CCol>
-          <CCol class="col-sm-6 py-1 border rounded">
-            {{ data.subject }}
+          <CCol sm="3">
+            <CFormLabel for="subject" class="col-form-label fw-semibold">
+              Subject
+            </CFormLabel>
+          </CCol>
+          <CCol sm="6">
+            <CFormInput
+              type="text"
+              id="subject"
+              :value="data.subject"
+              required
+            />
           </CCol>
         </CRow>
         <DataTable

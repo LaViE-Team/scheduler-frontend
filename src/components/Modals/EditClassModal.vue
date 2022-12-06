@@ -3,9 +3,18 @@
     <CForm>
       <CModalBody>
         <CRow class="mb-4">
-          <CCol sm="3" class="py-1 fw-semibold"> Class ID </CCol>
-          <CCol sm="3" class="py-1 border rounded">
-            {{ data.class_code }}
+          <CCol sm="3">
+            <CFormLabel for="classId" class="col-form-label fw-semibold">
+              Class ID
+            </CFormLabel>
+          </CCol>
+          <CCol sm="3">
+            <CFormInput
+              type="text"
+              id="classId"
+              :value="data.class_code"
+              required
+            />
           </CCol>
         </CRow>
         <DataTable
@@ -91,7 +100,6 @@ export default {
     }
   },
   methods: {
-    // modal edit class
     setColumns() {
       this.columns = [
         { data: 'time', title: '' },
