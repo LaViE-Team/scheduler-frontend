@@ -5,11 +5,7 @@
       <AppHeader />
       <div className="body flex-grow-1 px-3">
         <CContainer fluid>
-          <router-view v-slot="{ Component }">
-            <transition name="fade" mode="out-in">
-              <component :is="Component" />
-            </transition>
-          </router-view>
+          <router-view />
         </CContainer>
       </div>
       <AppFooter />

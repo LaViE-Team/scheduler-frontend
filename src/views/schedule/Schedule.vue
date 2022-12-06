@@ -50,7 +50,7 @@
         hideIndex
         clickable
         @viewClick="handleView"
-        hasView="true"
+        :hasView="true"
         @editClick="handleEdit"
         :hasEdit="true"
         @deleteClick="handleDelete"
@@ -126,14 +126,14 @@ export default {
         {
           subject: 'C BAsic',
           class_code: [
-            { name: 'IT123', time: 'Wed 6h-9h' },
-            { name: '', time: 'Thur 6h-9h' },
-            { name: 'IT122', time: 'Wed 6h-9h' },
+            { name: 'IT123', endTime: 'Wed 6h-9h' },
+            { name: '', endTime: 'Thur 6h-9h' },
+            { name: 'IT122', endTime: 'Wed 6h-9h' },
           ],
           time: [
-            { time: '- Wed 6h-9h' },
-            { time: '- Thur 6h-9h' },
-            { time: 'Wed 6h-9h' },
+            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
+            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
+            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
           ],
         },
         {

@@ -48,7 +48,7 @@
 
   <!-- Table -->
   <div class="mt-3 overflow-auto shadow-sm" id="datatable">
-    <CTable bordered :hover="!isLoading && datas.length > 0" class="m-0">
+    <CTable bordered :hover="!isLoading && datas.length > 0">
       <CTableHead color="light" v-if="!hideHeader">
         <CTableRow>
           <CTableHeaderCell
