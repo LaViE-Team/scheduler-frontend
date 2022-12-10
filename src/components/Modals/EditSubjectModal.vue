@@ -43,7 +43,7 @@
         <CButton color="secondary" variant="outline" @click="emitClose">
           Cancel
         </CButton>
-        <CButton type="submit" color="primary" @click="handleDone">
+        <CButton type="submit" color="primary" @click.prevent="handleDone">
           Done
         </CButton>
       </CModalFooter>
@@ -132,6 +132,7 @@ export default {
       })
     },
     handleDone() {
+      this.emitClose()
       console.log('done')
     },
   },

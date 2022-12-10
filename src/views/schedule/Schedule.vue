@@ -131,8 +131,8 @@ export default {
             { name: 'IT122', endTime: 'Wed 6h-9h' },
           ],
           time: [
-            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
-            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
+            { day: '-Wed', startTime: '06:45', endTime: '09:00' },
+            { day: '-Wed', startTime: '06:45', endTime: '09:00' },
             { day: 'Wed', startTime: '06:45', endTime: '09:00' },
           ],
         },
@@ -161,7 +161,6 @@ export default {
       console.log('view')
     },
     handleEdit() {
-      console.log('edit')
       this.toggleEditSubject()
       this.editedSubject = {}
     },
@@ -177,6 +176,7 @@ export default {
     },
     toggleEditClass() {
       this.toggleEditSubject()
+      console.log(this.showEditSubjectModal)
       this.showEditClassModal = !this.showEditClassModal
     },
 
@@ -228,6 +228,9 @@ export default {
     this.setDatas()
     this.$watch(
       () => this.$route.query,
+      () => {
+        this.showEditSubjectModal, this.toggleEditSubject()
+      },
       async () => {
         if (this.$route.name === 'SubjectInfo') {
           this.setQueries()

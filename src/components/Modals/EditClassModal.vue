@@ -26,9 +26,9 @@
           hideIndex
           hideHeader
           @deleteClick="handleDeleteTime"
-          hasDelete="true"
+          :hasDelete="true"
           @addClick="handleAddTime"
-          hasAdd="true"
+          :hasAdd="true"
         >
           <template #column(time)="">
             <p class="m-0 fw-semibold">Time</p>
@@ -60,7 +60,7 @@
         <CButton color="secondary" variant="outline" @click="emitClose"
           >Cancel</CButton
         >
-        <CButton type="submit" color="primary" @click="handleDone"
+        <CButton type="submit" color="primary" @click.prevent="handleDone"
           >Done</CButton
         >
       </CModalFooter>
@@ -143,8 +143,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.class-day {
-  min-width: 82px;
-}
-</style>
+<style scoped></style>

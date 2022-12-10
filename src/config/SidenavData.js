@@ -13,7 +13,7 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Acount',
+    name: 'Account',
     to: '/account',
     icon: 'fa-solid fa-user',
   },

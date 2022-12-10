@@ -19,7 +19,9 @@
                 xs="6"
                 class="d-grid gap-2 d-md-flex justify-content-md-end"
               >
-                <CButton color="info" href="#">Download</CButton>
+                <CButton color="info" href="#"
+                  >Download <font-awesome-icon icon="fa-solid fa-download"
+                /></CButton>
               </CCol>
             </CRow>
           </CCardFooter>
@@ -43,7 +45,9 @@
                 xs="6"
                 class="d-grid gap-2 d-md-flex justify-content-md-end"
               >
-                <CButton color="info" href="#">Download</CButton>
+                <CButton color="info" href="#">
+                  <font-awesome-icon icon="fa-solid fa-download"
+                /></CButton>
               </CCol>
             </CRow>
           </CCardFooter>
@@ -67,7 +71,9 @@
                 xs="6"
                 class="d-grid gap-2 d-md-flex justify-content-md-end"
               >
-                <CButton color="info" href="#">Download</CButton>
+                <CButton color="info" href="#"
+                  >Download <font-awesome-icon icon="fa-solid fa-download"
+                /></CButton>
               </CCol>
             </CRow>
           </CCardFooter>
@@ -91,7 +97,9 @@
                 xs="6"
                 class="d-grid gap-2 d-md-flex justify-content-md-end"
               >
-                <CButton color="info" href="#">Download</CButton>
+                <CButton color="info" href="#"
+                  >Download <font-awesome-icon icon="fa-solid fa-download"
+                /></CButton>
               </CCol>
             </CRow>
           </CCardFooter>

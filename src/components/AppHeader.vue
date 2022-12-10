@@ -5,8 +5,10 @@
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
       <CHeaderNav class="ms-auto align-items-center">
-        <a class="mx-2" @click="logout" role="button">Logout</a>
-        <span class="mx-4" style="font: 12">Nguyen Van A</span>
+        <a class="mx-2" @click="logout" role="button" style="font-size: 20px"
+          >Logout</a
+        >
+        <span class="mx-4" style="font-size: 20px">{{ user_name }}</span>
         <font-awesome-icon icon="fa-solid fa-user" size="2x" />
       </CHeaderNav>
     </CContainer>
@@ -17,6 +19,9 @@
 // import AppBreadcrumb from './AppBreadcrumb'
 import avatar from '@/assets/images/avatars/8.jpg'
 // import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
+import { getUserName, removeAccessToken, removeUserName } from '@/utils/cookies'
+import { ref } from '@vue/reactivity'
+
 export default {
   name: 'AppHeader',
   components: {
@@ -24,14 +29,21 @@ export default {
     // AppHeaderDropdownAccnt,
   },
   setup() {
+    const user_name = ref(String)
     return {
       avatar,
+      user_name,
     }
   },
   methods: {
     logout() {
       this.$router.push({ name: 'Login' })
+      removeAccessToken()
+      removeUserName()
     },
+  },
+  created() {
+    this.user_name = getUserName()
   },
 }
 </script>

@@ -87,7 +87,7 @@ import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
 import { ref } from '@vue/reactivity'
 import { login } from '@/services/auth'
-import { setAccessToken } from '@/utils/cookies'
+import { setAccessToken, setUserName } from '@/utils/cookies'
 
 export default {
   name: 'Login',
@@ -131,6 +131,8 @@ export default {
           setAccessToken(response.access_token, {
             expires: new Date(Date.now() + response.expires_in * 1000),
           })
+
+          setUserName(response.user_info.username)
 
           this.$router.replace({ name: 'Home' })
         }

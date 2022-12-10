@@ -203,6 +203,7 @@ import {
   faFileSignature,
   faFileExcel,
   faFileLines,
+  faDownload,
 } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
@@ -232,4 +233,5 @@ library.add(
   faFileSignature,
   faFileExcel,
   faFileLines,
+  faDownload,
 )
