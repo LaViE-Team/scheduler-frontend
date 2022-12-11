@@ -1,17 +1,17 @@
 <template>
-  <CModal :visible="isVisible" @click="emitClose">
+  <CModal @click="emitClose">
     <CForm>
       <CModalBody>
         <CRow class="mb-4">
           <CCol sm="3">
-            <CFormLabel for="subject" class="col-form-label fw-semibold">
+            <CFormLabel for="subjectName" class="col-form-label fw-semibold">
               Subject
             </CFormLabel>
           </CCol>
           <CCol sm="6">
             <CFormInput
               type="text"
-              id="subject"
+              id="subjectName"
               :value="data.subject"
               required
             />
@@ -26,11 +26,11 @@
           hideIndex
           clickable
           @editClick="handleEditClass"
-          hasEdit="true"
+          :hasEdit="true"
           @deleteClick="handleDeleteClass"
-          hasDelete="true"
+          :hasDelete="true"
           @addClick="handleAddClass"
-          hasAdd="true"
+          :hasAdd="true"
         >
           <template #column(time)="{ value }">
             <p class="m-0" v-for="data in value" :key="data.time">
@@ -57,19 +57,16 @@ import DataTable from '@/components/Common/DataTable.vue'
 
 export default {
   name: 'EditSubjectModal',
-  props: [],
   components: {
     DataTable,
   },
   setup() {
     const data = ref([])
     const columns = ref([])
-    const isVisible = ref(false)
     const showEditClassModal = ref(false)
     return {
       columns,
       data,
-      isVisible,
       showEditClassModal,
     }
   },
@@ -107,29 +104,17 @@ export default {
     emitEditClass() {
       this.$emit('editClass')
     },
-    toggleIsVisible() {
-      this.isVisible = !this.isVisible
-    },
     toggleShowEditClassModal() {
       this.showEditClassModal = !this.showEditClassModal
     },
     handleEditClass() {
       this.emitEditClass()
-      this.emitClose()
     },
     handleDeleteClass(_class) {
       this.data.classes = this.data.classes.filter((c) => c !== _class)
     },
     handleAddClass() {
-      this.data.classes.push({
-        subject: 'new',
-        classes: [
-          {
-            class_code: '...',
-            time: [],
-          },
-        ],
-      })
+      console.log('add')
     },
     handleDone() {
       this.emitClose()

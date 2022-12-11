@@ -1,17 +1,17 @@
 <template>
-  <CModal :visible="isVisible" @click="emitClose">
+  <CModal @click="emitClose">
     <CForm>
       <CModalBody>
         <CRow class="mb-4">
           <CCol sm="3">
-            <CFormLabel for="classId" class="col-form-label fw-semibold">
+            <CFormLabel for="classCode" class="col-form-label fw-semibold">
               Class ID
             </CFormLabel>
           </CCol>
           <CCol sm="3">
             <CFormInput
               type="text"
-              id="classId"
+              id="classCode"
               :value="data.class_code"
               required
             />
@@ -74,14 +74,12 @@ import DataTable from '@/components/Common/DataTable.vue'
 
 export default {
   name: 'EditClassModal',
-  props: [],
   components: {
     DataTable,
   },
   setup() {
     const data = ref([])
     const columns = ref([])
-    const isVisible = ref(false)
     const dayOption = [
       { label: 'Mon', value: '1' },
       { label: 'Tue', value: '2' },
@@ -96,7 +94,6 @@ export default {
       columns,
       data,
       dayOption,
-      isVisible,
     }
   },
   methods: {
@@ -125,11 +122,7 @@ export default {
       this.data.time = this.data.time.filter((t) => t !== time)
     },
     handleAddTime() {
-      this.data.time.push({
-        day: '',
-        startTime: '',
-        endTime: '',
-      })
+      this.data.time.push({ day: '', startTime: '', endTime: '' })
     },
     handleDone() {
       this.emitClose()

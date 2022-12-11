@@ -176,7 +176,6 @@ export default {
     },
     toggleEditClass() {
       this.toggleEditSubject()
-      console.log(this.showEditSubjectModal)
       this.showEditClassModal = !this.showEditClassModal
     },
 
