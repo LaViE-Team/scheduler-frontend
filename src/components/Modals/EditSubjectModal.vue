@@ -107,8 +107,9 @@ export default {
       this.toggleShowEditClassModal()
     },
     handleDone() {
+      this.$store.dispatch('editSubject', this.data)
+      this.$emit('resetHandleGetData')
       this.emitClose()
-      console.log('done')
     },
   },
   created() {

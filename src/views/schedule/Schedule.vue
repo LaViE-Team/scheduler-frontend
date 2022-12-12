@@ -77,6 +77,7 @@
       :visible="showEditSubjectModal"
       @close="toggleEditSubject"
       @editClass="toggleEditClass"
+      @resetHandleGetData="setDatas"
     />
 
     <EditClassModal :visible="showEditClassModal" @close="toggleEditClass" />
@@ -104,12 +105,14 @@ export default {
     const datas = ref([])
     const columns = ref([])
     const queries = ref({})
+    // const data = ref([])
 
     return {
       value,
       datas,
       columns,
       queries,
+      reformatedSubject: computed(() => store.getters.reformatedSubject),
       showEditSubjectModal: computed(() => store.getters.showEditSubjectModal),
       showEditClassModal: computed(() => store.getters.showEditClassModal),
       editedSubjectID: computed(() => store.getters.editedSubjectID),
@@ -125,7 +128,7 @@ export default {
     },
     setDatas() {
       this.pages = 10
-      this.datas = this.$store.getters.reformatedSubject
+      this.datas = this.reformatedSubject
     },
     setQueries() {
       this.queries = this.$route.query
@@ -135,6 +138,7 @@ export default {
     },
     handleEdit(subject) {
       this.$store.dispatch('setEditedSubjectID', subject.id)
+      this.$store.dispatch('setEditedSubject', subject.id)
       this.toggleEditSubject()
     },
     handleDelete() {
@@ -198,6 +202,7 @@ export default {
     this.setQueries()
     this.setDatas()
     this.$watch(
+      () => this.reformatedSubject,
       () => this.$route.query,
       () => {
         this.showEditSubjectModal, this.toggleEditSubject()

@@ -63,6 +63,7 @@ export default {
     showEditClassModal: false,
     editedSubjectID: null,
     editedClassCode: null,
+    editedSubject: {},
   }),
   getters: {
     subjects(state) {
@@ -109,9 +110,10 @@ export default {
       return state.editedClassCode
     },
     getEditedSubject(state) {
-      return state.subjects.find(
-        (subject) => subject.id === state.editedSubjectID,
-      )
+      // return state.subjects.find(
+      // (subject) => subject.id === state.editedSubjectID,
+      // )
+      return state.editedSubject
     },
     getEditedClass(state, getters) {
       return getters.getEditedSubject.classes.find(
@@ -123,6 +125,14 @@ export default {
     setEditedSubjectID(state, value) {
       state.editedSubjectID = value
     },
+    setEditedSubject(state, value) {
+      const index = state.subjects.findIndex(
+        (obj) => obj.subject_name == value.subject_name,
+      )
+      state.editedSubject = JSON.parse(JSON.stringify(state.subjects[index]))
+      // Object.assign(state.editedSubject, state.subjects[index]);
+      // state.editedSubject = state.subjects[index]
+    },
     setEditedClassCode(state, value) {
       state.editedClassCode = value
     },
@@ -133,18 +143,28 @@ export default {
       state.showEditSubjectModal = !state.showEditSubjectModal
       state.showEditClassModal = !state.showEditClassModal
     },
+    editClass(state, value) {
+      const index = state.editedSubject.classes.findIndex(
+        (obj) => obj.classCode === value.classCode,
+      )
+      if (index > -1) {
+        state.editedSubject.classes[index] = value.new
+      } else {
+        state.editedSubject.classes.push(value.new)
+      }
+    },
     addSubject(state, value) {
       state.subjects.push(value)
     },
     editSubject(state, value) {
       const index = state.subjects.findIndex(
-        (obj) => obj.subject_name == value.subject_name,
+        (obj) => obj.subjectCode == value.subjectCode,
       )
       state.subjects[index] = value
     },
     deleteSubject(state, value) {
       const index = state.subjects.findIndex(
-        (obj) => obj.subject_name == value.subject_name,
+        (obj) => obj.subjectCode == value.subjectCode,
       )
       state.subjects.slide(index, 1)
     },
@@ -152,6 +172,9 @@ export default {
   actions: {
     setEditedSubjectID(context, payload) {
       return context.commit('setEditedSubjectID', payload)
+    },
+    setEditedSubject(context, payload) {
+      return context.commit('setEditedSubject', payload)
     },
     setEditedClassCode(context, payload) {
       return context.commit('setEditedClassCode', payload)
@@ -161,6 +184,12 @@ export default {
     },
     toggleEditClass(context) {
       return context.commit('toggleEditClass')
+    },
+    editClass(context, payload) {
+      return context.commit('editClass', payload)
+    },
+    editSubject(context, payload) {
+      return context.commit('editSubject', payload)
     },
   },
 }
