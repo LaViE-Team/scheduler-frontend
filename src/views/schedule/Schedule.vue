@@ -57,9 +57,10 @@
         :hasDelete="true"
         @clickButton="clickDone"
       >
-        <template #column(class_code)="{ value }">
-          <p class="m-0" v-for="data in value" :key="data.name">
-            {{ data.name }} <br v-if="!data.name" />
+        <template #column(classCode)="{ value }">
+          <p class="m-0" v-for="data in value" :key="data">
+            <span v-if="data[0] != ' '">{{ data }}</span>
+            <br v-else />
           </p>
         </template>
         <template #column(time)="{ value }">
@@ -84,6 +85,8 @@
 
 <script>
 import { ref } from '@vue/reactivity'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
 import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
 import EditClassModal from '@/components/Modals/EditClassModal.vue'
@@ -96,63 +99,33 @@ export default {
     EditClassModal,
   },
   setup() {
+    const store = useStore()
     const value = ref({})
     const datas = ref([])
     const columns = ref([])
     const queries = ref({})
 
-    const showEditSubjectModal = ref(false)
-    const showEditClassModal = ref(false)
     return {
       value,
       datas,
       columns,
       queries,
-      showEditSubjectModal,
-      showEditClassModal,
+      showEditSubjectModal: computed(() => store.getters.showEditSubjectModal),
+      showEditClassModal: computed(() => store.getters.showEditClassModal),
+      editedSubjectID: computed(() => store.getters.editedSubjectID),
     }
   },
   methods: {
     setColumns() {
       this.columns = [
-        { data: 'subject', title: 'Subject' },
-        { data: 'class_code', title: 'Classcode' },
+        { data: 'subjectName', title: 'Subject' },
+        { data: 'classCode', title: 'Class Code' },
         { data: 'time', title: 'Time' },
       ]
     },
     setDatas() {
       this.pages = 10
-      this.datas = [
-        {
-          subject: 'C BAsic',
-          class_code: [
-            { name: 'IT123', endTime: 'Wed 6h-9h' },
-            { name: '', endTime: 'Thur 6h-9h' },
-            { name: 'IT122', endTime: 'Wed 6h-9h' },
-          ],
-          time: [
-            { day: '-Wed', startTime: '06:45', endTime: '09:00' },
-            { day: '-Wed', startTime: '06:45', endTime: '09:00' },
-            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
-          ],
-        },
-        {
-          subject: 'C Basic',
-          class_code: [{ name: 'IT123' }, { name: 'IT122' }],
-          time: [
-            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
-            { day: 'Tue', startTime: '06:45', endTime: '09:00' },
-          ],
-        },
-        {
-          subject: 'C Basic',
-          class_code: [{ name: 'IT123' }, { name: 'IT122' }],
-          time: [
-            { day: 'Wed', startTime: '06:45', endTime: '09:00' },
-            { day: 'Tue', startTime: '06:45', endTime: '09:00' },
-          ],
-        },
-      ]
+      this.datas = this.$store.getters.reformatedSubject
     },
     setQueries() {
       this.queries = this.$route.query
@@ -160,9 +133,9 @@ export default {
     handleView() {
       console.log('view')
     },
-    handleEdit() {
+    handleEdit(subject) {
+      this.$store.dispatch('setEditedSubjectID', subject.id)
       this.toggleEditSubject()
-      this.editedSubject = {}
     },
     handleDelete() {
       console.log('delete')
@@ -172,12 +145,10 @@ export default {
       this.$router.push({ name: 'ScheduleInfo' })
     },
     toggleEditSubject() {
-      this.showEditSubjectModal = !this.showEditSubjectModal
+      this.$store.dispatch('toggleEditSubject')
     },
     toggleEditClass() {
-      this.toggleEditSubject()
-      console.log(this.showEditSubjectModal)
-      this.showEditClassModal = !this.showEditClassModal
+      this.$store.dispatch('toggleEditClass')
     },
 
     async fetchLanguages(query) {

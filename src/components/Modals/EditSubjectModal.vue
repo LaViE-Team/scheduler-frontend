@@ -1,18 +1,18 @@
 <template>
-  <CModal :visible="isVisible" @click="emitClose">
+  <CModal @click="emitClose">
     <CForm>
       <CModalBody>
         <CRow class="mb-4">
           <CCol sm="3">
-            <CFormLabel for="subject" class="col-form-label fw-semibold">
+            <CFormLabel for="subjectName" class="col-form-label fw-semibold">
               Subject
             </CFormLabel>
           </CCol>
           <CCol sm="6">
             <CFormInput
               type="text"
-              id="subject"
-              :value="data.subject"
+              id="subjectName"
+              :value="data.subjectName"
               required
             />
           </CCol>
@@ -26,14 +26,14 @@
           hideIndex
           clickable
           @editClick="handleEditClass"
-          hasEdit="true"
+          :hasEdit="true"
           @deleteClick="handleDeleteClass"
-          hasDelete="true"
+          :hasDelete="true"
           @addClick="handleAddClass"
-          hasAdd="true"
+          :hasAdd="true"
         >
           <template #column(time)="{ value }">
-            <p class="m-0" v-for="data in value" :key="data.time">
+            <p class="m-0" v-for="data in value" :key="data">
               {{ data.day }} {{ data.startTime }}-{{ data.endTime }}
             </p>
           </template>
@@ -53,53 +53,38 @@
 
 <script>
 import { ref } from '@vue/reactivity'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
 
 export default {
   name: 'EditSubjectModal',
-  props: [],
   components: {
     DataTable,
   },
   setup() {
+    const store = useStore()
     const data = ref([])
     const columns = ref([])
-    const isVisible = ref(false)
-    const showEditClassModal = ref(false)
+    const classes = ref([])
+
     return {
       columns,
       data,
-      isVisible,
-      showEditClassModal,
+      showEditClassModal: computed(() => store.getters.showEditClassModal),
+      classes,
+      editedSubject: computed(() => store.getters.editedSubject),
     }
   },
   methods: {
     setColumns() {
       this.columns = [
-        { data: 'class_code', title: 'Class Code' },
+        { data: 'classCode', title: 'Class Code' },
         { data: 'time', title: 'Time' },
       ]
     },
-    setData() {
-      this.data = {
-        subject: 'C Basic',
-        classes: [
-          {
-            class_code: 'IT123',
-            time: [
-              { day: 'Mon', startTime: '06:45', endTime: '09:00' },
-              { day: 'Wed', startTime: '06:45', endTime: '09:00' },
-            ],
-          },
-          {
-            class_code: 'IT123',
-            time: [
-              { day: 'Tue', startTime: '06:45', endTime: '09:00' },
-              { day: 'Thu', startTime: '06:45', endTime: '09:00' },
-            ],
-          },
-        ],
-      }
+    setDatas() {
+      this.data = this.$store.getters.getEditedSubject
     },
     emitClose() {
       this.$emit('close')
@@ -107,29 +92,19 @@ export default {
     emitEditClass() {
       this.$emit('editClass')
     },
-    toggleIsVisible() {
-      this.isVisible = !this.isVisible
-    },
     toggleShowEditClassModal() {
-      this.showEditClassModal = !this.showEditClassModal
+      this.$store.dispatch('toggleEditClass')
     },
-    handleEditClass() {
-      this.emitEditClass()
-      this.emitClose()
+    handleEditClass(_class) {
+      this.$store.dispatch('setEditedClassCode', _class.classCode)
+      this.toggleShowEditClassModal()
     },
     handleDeleteClass(_class) {
       this.data.classes = this.data.classes.filter((c) => c !== _class)
     },
     handleAddClass() {
-      this.data.classes.push({
-        subject: 'new',
-        classes: [
-          {
-            class_code: '...',
-            time: [],
-          },
-        ],
-      })
+      this.$store.dispatch('setEditedClassCode', null)
+      this.toggleShowEditClassModal()
     },
     handleDone() {
       this.emitClose()
@@ -138,7 +113,14 @@ export default {
   },
   created() {
     this.setColumns()
-    this.setData()
+    this.setDatas()
+  },
+  watch: {
+    '$store.getters.editedSubjectID': {
+      handler: function () {
+        this.setDatas()
+      },
+    },
   },
 }
 </script>

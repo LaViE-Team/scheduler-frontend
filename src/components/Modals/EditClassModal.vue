@@ -1,18 +1,18 @@
 <template>
-  <CModal :visible="isVisible" @click="emitClose">
+  <CModal @click="emitClose">
     <CForm>
       <CModalBody>
         <CRow class="mb-4">
           <CCol sm="3">
-            <CFormLabel for="classId" class="col-form-label fw-semibold">
-              Class ID
+            <CFormLabel for="classCode" class="col-form-label fw-semibold">
+              Class Code
             </CFormLabel>
           </CCol>
           <CCol sm="3">
             <CFormInput
               type="text"
-              id="classId"
-              :value="data.class_code"
+              id="classCode"
+              :value="data.classCode"
               required
             />
           </CCol>
@@ -70,18 +70,19 @@
 
 <script>
 import { ref } from '@vue/reactivity'
+// import { computed } from 'vue'
+// import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
 
 export default {
   name: 'EditClassModal',
-  props: [],
   components: {
     DataTable,
   },
   setup() {
+    // const store = useStore()
     const data = ref([])
     const columns = ref([])
-    const isVisible = ref(false)
     const dayOption = [
       { label: 'Mon', value: '1' },
       { label: 'Tue', value: '2' },
@@ -96,7 +97,6 @@ export default {
       columns,
       data,
       dayOption,
-      isVisible,
     }
   },
   methods: {
@@ -110,12 +110,14 @@ export default {
       ]
     },
     setDatas() {
-      this.data = {
-        class_code: 'IT123',
-        time: [
-          { day: 'Wed', startTime: '06:45', endTime: '09:00' },
-          { day: 'Tue', startTime: '06:45', endTime: '09:00' },
-        ],
+      let editedClassCode = this.$store.getters.editedClassCode
+      if (editedClassCode) {
+        this.data = this.$store.getters.getEditedClass
+      } else {
+        this.data = {
+          classCode: '',
+          time: [{ day: '', startTime: '', endTime: '' }],
+        }
       }
     },
     emitClose() {
@@ -125,20 +127,23 @@ export default {
       this.data.time = this.data.time.filter((t) => t !== time)
     },
     handleAddTime() {
-      this.data.time.push({
-        day: '',
-        startTime: '',
-        endTime: '',
-      })
+      this.data.time.push({ day: '', startTime: '', endTime: '' })
     },
     handleDone() {
       this.emitClose()
       console.log('done')
     },
   },
-  created() {
+  async created() {
     this.setColumns()
     this.setDatas()
+  },
+  watch: {
+    '$store.getters.editedClassCode': {
+      handler: function () {
+        this.setDatas()
+      },
+    },
   },
 }
 </script>
