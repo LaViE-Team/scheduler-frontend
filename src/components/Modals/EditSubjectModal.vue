@@ -12,7 +12,7 @@
             <CFormInput
               type="text"
               id="subjectName"
-              :value="data.subject"
+              :value="data.subjectName"
               required
             />
           </CCol>
@@ -33,7 +33,7 @@
           :hasAdd="true"
         >
           <template #column(time)="{ value }">
-            <p class="m-0" v-for="data in value" :key="data.time">
+            <p class="m-0" v-for="data in value" :key="data">
               {{ data.day }} {{ data.startTime }}-{{ data.endTime }}
             </p>
           </template>
@@ -53,6 +53,8 @@
 
 <script>
 import { ref } from '@vue/reactivity'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
 
 export default {
@@ -61,42 +63,28 @@ export default {
     DataTable,
   },
   setup() {
+    const store = useStore()
     const data = ref([])
     const columns = ref([])
-    const showEditClassModal = ref(false)
+    const classes = ref([])
+
     return {
       columns,
       data,
-      showEditClassModal,
+      showEditClassModal: computed(() => store.getters.showEditClassModal),
+      classes,
+      editedSubject: computed(() => store.getters.editedSubject),
     }
   },
   methods: {
     setColumns() {
       this.columns = [
-        { data: 'class_code', title: 'Class Code' },
+        { data: 'classCode', title: 'Class Code' },
         { data: 'time', title: 'Time' },
       ]
     },
-    setData() {
-      this.data = {
-        subject: 'C Basic',
-        classes: [
-          {
-            class_code: 'IT123',
-            time: [
-              { day: 'Mon', startTime: '06:45', endTime: '09:00' },
-              { day: 'Wed', startTime: '06:45', endTime: '09:00' },
-            ],
-          },
-          {
-            class_code: 'IT123',
-            time: [
-              { day: 'Tue', startTime: '06:45', endTime: '09:00' },
-              { day: 'Thu', startTime: '06:45', endTime: '09:00' },
-            ],
-          },
-        ],
-      }
+    setDatas() {
+      this.data = this.$store.getters.getEditedSubject
     },
     emitClose() {
       this.$emit('close')
@@ -105,16 +93,18 @@ export default {
       this.$emit('editClass')
     },
     toggleShowEditClassModal() {
-      this.showEditClassModal = !this.showEditClassModal
+      this.$store.dispatch('toggleEditClass')
     },
-    handleEditClass() {
-      this.emitEditClass()
+    handleEditClass(_class) {
+      this.$store.dispatch('setEditedClassCode', _class.classCode)
+      this.toggleShowEditClassModal()
     },
     handleDeleteClass(_class) {
       this.data.classes = this.data.classes.filter((c) => c !== _class)
     },
     handleAddClass() {
-      console.log('add')
+      this.$store.dispatch('setEditedClassCode', null)
+      this.toggleShowEditClassModal()
     },
     handleDone() {
       this.emitClose()
@@ -123,7 +113,14 @@ export default {
   },
   created() {
     this.setColumns()
-    this.setData()
+    this.setDatas()
+  },
+  watch: {
+    '$store.getters.editedSubjectID': {
+      handler: function () {
+        this.setDatas()
+      },
+    },
   },
 }
 </script>

@@ -5,14 +5,14 @@
         <CRow class="mb-4">
           <CCol sm="3">
             <CFormLabel for="classCode" class="col-form-label fw-semibold">
-              Class ID
+              Class Code
             </CFormLabel>
           </CCol>
           <CCol sm="3">
             <CFormInput
               type="text"
               id="classCode"
-              :value="data.class_code"
+              :value="data.classCode"
               required
             />
           </CCol>
@@ -70,6 +70,8 @@
 
 <script>
 import { ref } from '@vue/reactivity'
+// import { computed } from 'vue'
+// import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
 
 export default {
@@ -78,6 +80,7 @@ export default {
     DataTable,
   },
   setup() {
+    // const store = useStore()
     const data = ref([])
     const columns = ref([])
     const dayOption = [
@@ -107,12 +110,14 @@ export default {
       ]
     },
     setDatas() {
-      this.data = {
-        class_code: 'IT123',
-        time: [
-          { day: 'Wed', startTime: '06:45', endTime: '09:00' },
-          { day: 'Tue', startTime: '06:45', endTime: '09:00' },
-        ],
+      let editedClassCode = this.$store.getters.editedClassCode
+      if (editedClassCode) {
+        this.data = this.$store.getters.getEditedClass
+      } else {
+        this.data = {
+          classCode: '',
+          time: [{ day: '', startTime: '', endTime: '' }],
+        }
       }
     },
     emitClose() {
@@ -129,9 +134,16 @@ export default {
       console.log('done')
     },
   },
-  created() {
+  async created() {
     this.setColumns()
     this.setDatas()
+  },
+  watch: {
+    '$store.getters.editedClassCode': {
+      handler: function () {
+        this.setDatas()
+      },
+    },
   },
 }
 </script>
