@@ -199,7 +199,7 @@ export default {
       console.log('delete')
     },
     async clickDone() {
-      const subjectCodes = this.datas.map(e => {
+      const subjectCodes = this.datas.map((e) => {
         return e.subjectCode
       })
       try {
@@ -208,12 +208,11 @@ export default {
         this.$store.dispatch('setSchedules', response)
         console.log(this.$store.getters.schedules)
         // console.log(this.reformatedSubject)
-        
       } finally {
         // this.isLoading = false
         this.$router.push({ name: 'ScheduleInfo' })
       }
-      
+
       // this.$router.push({ name: 'ScheduleInfo' })
     },
     toggleEditSubject() {

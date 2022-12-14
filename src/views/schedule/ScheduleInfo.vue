@@ -80,8 +80,10 @@ export default {
         { data: 'Sun', title: 'Sun' },
       ]
     },
-    setDatas(page = 0) { 
-      this.pages = this.schedules.highDensity.length
+    setDatas(page = 0) {
+      this.pages = this.schedules.highDensity
+        ? this.schedules.highDensity.length
+        : 1
       this.datas = [
         {
           time: {
@@ -162,17 +164,20 @@ export default {
           Sun: '',
         },
       ]
-      this.datas.forEach((e) => {
-        this.schedules.highDensity[page].forEach((day) => {
-          day.time.forEach((time) => {
-            if (this.compareTime(time.startTime, e.time.startTime) <=0
-               && this.compareTime(e.time.endTime, time.endTime) <=0
-            ) {
-              e[time.day] = day.subjectName + '(' + day.classCode + ')'
-            }
+      if (this.schedules.highDensity) {
+        this.datas.forEach((e) => {
+          this.schedules.highDensity[page].forEach((day) => {
+            day.time.forEach((time) => {
+              if (
+                this.compareTime(time.startTime, e.time.startTime) <= 0 &&
+                this.compareTime(e.time.endTime, time.endTime) <= 0
+              ) {
+                e[time.day] = day.subjectName + '(' + day.classCode + ')'
+              }
+            })
           })
         })
-      })
+      }
     },
     compareTime(str1, str2) {
       if (str1 === str2) {
@@ -211,7 +216,7 @@ export default {
       async () => {
         if (this.$route.name === 'ScheduleInfo') {
           this.setQueries()
-          await this.setDatas(this.queries.page-1)
+          await this.setDatas(this.queries.page - 1)
         }
       },
     )
