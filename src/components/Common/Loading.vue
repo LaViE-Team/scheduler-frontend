@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex align-items-center justify-content-center">
     <CSpinner color="primary" class="me-2" />
-    <span>{{ $t('common.loading') }}</span>
+    <span>Loading....</span>
   </div>
 </template>
 
