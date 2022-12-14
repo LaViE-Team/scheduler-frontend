@@ -1,61 +1,62 @@
 export default {
   state: () => ({
     subjects: [
-      {
-        subjectName: 'C Intro',
-        subjectCode: 'IT123',
-        classes: [
-          {
-            classCode: '101001',
-            time: [
-              { day: 'Mon', startTime: '06:45', endTime: '08:00' },
-              { day: 'Tue', startTime: '06:45', endTime: '08:00' },
-            ],
-          },
-          {
-            classCode: '101002',
-            time: [
-              { day: 'Wed', startTime: '06:45', endTime: '08:00' },
-              { day: 'Thu', startTime: '06:45', endTime: '08:00' },
-            ],
-          },
-        ],
-      },
-      {
-        subjectName: 'C Basic',
-        subjectCode: 'IT124',
-        classes: [
-          {
-            classCode: '101003',
-            time: [
-              { day: 'Mon', startTime: '06:45', endTime: '08:00' },
-              { day: 'Tue', startTime: '06:45', endTime: '08:00' },
-            ],
-          },
-          {
-            classCode: '101004',
-            time: [
-              { day: 'Wed', startTime: '06:45', endTime: '08:00' },
-              { day: 'Thu', startTime: '06:45', endTime: '08:00' },
-            ],
-          },
-        ],
-      },
-      {
-        subjectName: 'C Advanced',
-        subjectCode: 'IT125',
-        classes: [
-          {
-            classCode: '101005',
-            time: [{ day: 'Tue', startTime: '06:45', endTime: '08:00' }],
-          },
-          {
-            classCode: '101006',
-            time: [{ day: 'Thu', startTime: '06:45', endTime: '20:00' }],
-          },
-        ],
-      },
+      // {
+      //   subjectName: 'C Intro',
+      //   subjectCode: 'IT123',
+      //   classes: [
+      //     {
+      //       classCode: '101001',
+      //       time: [
+      //         { day: 'Mon', startTime: '06:45', endTime: '08:00' },
+      //         { day: 'Tue', startTime: '06:45', endTime: '08:00' },
+      //       ],
+      //     },
+      //     {
+      //       classCode: '101002',
+      //       time: [
+      //         { day: 'Wed', startTime: '06:45', endTime: '08:00' },
+      //         { day: 'Thu', startTime: '06:45', endTime: '08:00' },
+      //       ],
+      //     },
+      //   ],
+      // },
+      // {
+      //   subjectName: 'C Basic',
+      //   subjectCode: 'IT124',
+      //   classes: [
+      //     {
+      //       classCode: '101003',
+      //       time: [
+      //         { day: 'Mon', startTime: '06:45', endTime: '08:00' },
+      //         { day: 'Tue', startTime: '06:45', endTime: '08:00' },
+      //       ],
+      //     },
+      //     {
+      //       classCode: '101004',
+      //       time: [
+      //         { day: 'Wed', startTime: '06:45', endTime: '08:00' },
+      //         { day: 'Thu', startTime: '06:45', endTime: '08:00' },
+      //       ],
+      //     },
+      //   ],
+      // },
+      // {
+      //   subjectName: 'C Advanced',
+      //   subjectCode: 'IT125',
+      //   classes: [
+      //     {
+      //       classCode: '101005',
+      //       time: [{ day: 'Tue', startTime: '06:45', endTime: '08:00' }],
+      //     },
+      //     {
+      //       classCode: '101006',
+      //       time: [{ day: 'Thu', startTime: '06:45', endTime: '20:00' }],
+      //     },
+      //   ],
+      // },
     ],
+    schedules: [],
     showEditSubjectModal: false,
     showEditClassModal: false,
     editedSubjectID: null,
@@ -65,6 +66,9 @@ export default {
   getters: {
     subjects(state) {
       return state.subjects
+    },
+    schedules(state) {
+      return state.schedules
     },
     reformatedSubject(state) {
       let reformatedSubjects = []
@@ -116,19 +120,20 @@ export default {
       return getters.getEditedSubject.classes.find(
         (c) => c.classCode === state.editedClassCode,
       )
-    }
+    },
   },
   mutations: {
-    setSubjects(state, value){
+    setSubjects(state, value) {
       state.subjects = value
+    },
+    setSchedules(state, value) {
+      state.schedules = value
     },
     setEditedSubjectID(state, value) {
       state.editedSubjectID = value
     },
     setEditedSubject(state, value) {
-      const index = state.subjects.findIndex(
-        (obj) => obj.subjectCode == value,
-      )
+      const index = state.subjects.findIndex((obj) => obj.subjectCode == value)
       state.editedSubject = JSON.parse(JSON.stringify(state.subjects[index]))
       // Object.assign(state.editedSubject, state.subjects[index]);
       // state.editedSubject = state.subjects[index]
@@ -172,6 +177,9 @@ export default {
   actions: {
     setSubjects(context, payload) {
       return context.commit('setSubjects', payload)
+    },
+    setSchedules(context, payload) {
+      return context.commit('setSchedules', payload)
     },
     setEditedSubjectID(context, payload) {
       return context.commit('setEditedSubjectID', payload)

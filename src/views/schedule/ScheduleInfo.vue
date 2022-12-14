@@ -11,8 +11,8 @@
           <CDropdown color="primary">
             <CDropdownToggle color="primary">Type of Schedule </CDropdownToggle>
             <CDropdownMenu>
-              <CDropdownItem href="#">Type 1</CDropdownItem>
-              <CDropdownItem href="#">Type 2</CDropdownItem>
+              <CDropdownItem href="#">High Density</CDropdownItem>
+              <CDropdownItem href="#">Low Density</CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
         </CCol>
@@ -29,6 +29,11 @@
         hideActions
         @clickButton="clickExport"
       >
+        <template #column(time)="{ value }">
+          <p>
+            {{ value.startTime + '-' + value.endTime }}
+          </p>
+        </template>
       </DataTable>
     </CCardBody>
   </CCard>
@@ -36,6 +41,8 @@
 
 <script>
 import { ref } from '@vue/reactivity'
+import { useStore } from 'vuex'
+import { computed } from 'vue'
 import DataTable from '@/components/Common/DataTable.vue'
 import { CButton } from '@coreui/vue'
 
@@ -46,6 +53,7 @@ export default {
     CButton,
   },
   setup() {
+    const store = useStore()
     const value = ref({})
     const datas = ref([])
     const columns = ref([])
@@ -56,95 +64,132 @@ export default {
       datas,
       columns,
       queries,
+      schedules: computed(() => store.getters.schedules),
     }
   },
   methods: {
     setColumns() {
       this.columns = [
         { data: 'time', title: 'Time' },
-        { data: 'mon', title: 'Mon' },
-        { data: 'tue', title: 'Tue' },
-        { data: 'wed', title: 'Wed' },
-        { data: 'thu', title: 'Thu' },
-        { data: 'fri', title: 'Fri' },
-        { data: 'sat', title: 'Sat' },
-        { data: 'sun', title: 'Sun' },
+        { data: 'Mon', title: 'Mon' },
+        { data: 'Tue', title: 'Tue' },
+        { data: 'Wed', title: 'Wed' },
+        { data: 'Thu', title: 'Thu' },
+        { data: 'Fri', title: 'Fri' },
+        { data: 'Sat', title: 'Sat' },
+        { data: 'Sun', title: 'Sun' },
       ]
     },
-    setDatas() {
-      this.pages = 10
+    setDatas(page = 0) { 
+      this.pages = this.schedules.highDensity.length
       this.datas = [
         {
-          time: '6h45-7h45',
-          mon: 'Math(M1234)',
-          tue: '',
-          wed: '',
-          thu: '',
-          fri: '',
-          sat: '',
-          sun: '',
+          time: {
+            startTime: '06:45',
+            endTime: '08:10',
+          },
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: '',
+          Sun: '',
         },
         {
-          time: '8h45-9h45',
-          mon: 'Math(M1234)',
-          tue: '',
-          wed: '',
-          thu: '',
-          fri: '',
-          sat: '',
-          sun: '',
+          time: {
+            startTime: '08:25',
+            endTime: '10:05',
+          },
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: '',
+          Sun: '',
         },
         {
-          time: '10h45-11h45',
-          mon: '',
-          tue: '',
-          wed: 'Math(M1234)',
-          thu: '',
-          fri: '',
-          sat: '',
-          sun: '',
+          time: {
+            startTime: '10:15',
+            endTime: '11:45',
+          },
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: '',
+          Sun: '',
         },
         {
-          time: '12h45-13h45',
-          mon: '',
-          tue: '',
-          wed: '',
-          thu: 'Math(M1234)',
-          fri: '',
-          sat: '',
-          sun: '',
+          time: {
+            startTime: '12:30',
+            endTime: '14:00',
+          },
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: '',
+          Sun: '',
         },
         {
-          time: '15h45-16h45',
-          mon: '',
-          tue: '',
-          wed: '',
-          thu: '',
-          fri: 'Math(M1234)',
-          sat: '',
-          sun: '',
+          time: {
+            startTime: '14:05',
+            endTime: '15:50',
+          },
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: '',
+          Sun: '',
         },
         {
-          time: '16h45-17h45',
-          mon: '',
-          tue: '',
-          wed: '',
-          thu: '',
-          fri: 'Math(M1234)',
-          sat: '',
-          sun: '',
-        },
-        {
-          time: '17h45-18h45',
-          mon: '',
-          tue: 'Math(M1234)',
-          wed: '',
-          thu: '',
-          fri: '',
-          sat: '',
-          sun: '',
+          time: {
+            startTime: '16:05',
+            endTime: '17:30',
+          },
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: '',
+          Sun: '',
         },
       ]
+      this.datas.forEach((e) => {
+        this.schedules.highDensity[page].forEach((day) => {
+          day.time.forEach((time) => {
+            if (this.compareTime(time.startTime, e.time.startTime) <=0
+               && this.compareTime(e.time.endTime, time.endTime) <=0
+            ) {
+              e[time.day] = day.subjectName + '(' + day.classCode + ')'
+            }
+          })
+        })
+      })
+    },
+    compareTime(str1, str2) {
+      if (str1 === str2) {
+        return 0
+      }
+      var time1 = str1.split(':')
+      var time2 = str2.split(':')
+      if (parseInt(time1[0]) > parseInt(time2[0])) {
+        return 1
+      } else if (
+        parseInt(time1[0]) == parseInt(time2[0]) &&
+        parseInt(time1[1]) > parseInt(time2[1])
+      ) {
+        return 1
+      } else {
+        return -1
+      }
     },
     setQueries() {
       this.queries = this.$route.query
@@ -166,7 +211,7 @@ export default {
       async () => {
         if (this.$route.name === 'ScheduleInfo') {
           this.setQueries()
-          await this.setDatas()
+          await this.setDatas(this.queries.page-1)
         }
       },
     )
