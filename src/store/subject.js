@@ -2,7 +2,6 @@ export default {
   state: () => ({
     subjects: [
       {
-        id: 1,
         subjectName: 'C Intro',
         subjectCode: 'IT123',
         classes: [
@@ -23,7 +22,6 @@ export default {
         ],
       },
       {
-        id: 2,
         subjectName: 'C Basic',
         subjectCode: 'IT124',
         classes: [
@@ -44,7 +42,6 @@ export default {
         ],
       },
       {
-        id: 3,
         subjectName: 'C Advanced',
         subjectCode: 'IT125',
         classes: [
@@ -54,7 +51,7 @@ export default {
           },
           {
             classCode: '101006',
-            time: [{ day: 'Thu', startTime: '06:45', endTime: '08:00' }],
+            time: [{ day: 'Thu', startTime: '06:45', endTime: '20:00' }],
           },
         ],
       },
@@ -119,15 +116,18 @@ export default {
       return getters.getEditedSubject.classes.find(
         (c) => c.classCode === state.editedClassCode,
       )
-    },
+    }
   },
   mutations: {
+    setSubjects(state, value){
+      state.subjects = value
+    },
     setEditedSubjectID(state, value) {
       state.editedSubjectID = value
     },
     setEditedSubject(state, value) {
       const index = state.subjects.findIndex(
-        (obj) => obj.subject_name == value.subject_name,
+        (obj) => obj.subjectCode == value,
       )
       state.editedSubject = JSON.parse(JSON.stringify(state.subjects[index]))
       // Object.assign(state.editedSubject, state.subjects[index]);
@@ -170,6 +170,9 @@ export default {
     },
   },
   actions: {
+    setSubjects(context, payload) {
+      return context.commit('setSubjects', payload)
+    },
     setEditedSubjectID(context, payload) {
       return context.commit('setEditedSubjectID', payload)
     },

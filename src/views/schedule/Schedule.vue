@@ -1,4 +1,5 @@
 <template>
+  <div>
   <CCard>
     <CCardBody>
       <!-- Page Title -->
@@ -10,10 +11,11 @@
           <CDropdown color="primary">
             <CDropdownToggle color="primary">Import </CDropdownToggle>
             <CDropdownMenu>
-              <CDropdownItem href="#"
-                >Import File CSV <CIcon icon="cilCloudUpload"
+              <CDropdownItem role="button" @click="chooseFiles()"
+                >Import File CSV
+                <input id="fileUpload" ref="file" @change="uploadFile" type="file" hidden><CIcon icon="cilCloudUpload"
               /></CDropdownItem>
-              <CDropdownItem href="#"
+              <CDropdownItem role="button" @click="downloadSample()"
                 >Download Sample CSV <CIcon icon="cilCloudDownload"
               /></CDropdownItem>
             </CDropdownMenu>
@@ -23,18 +25,16 @@
           <CRow>
             <CCol xs="8" class="d-grid gap-2 d-md-flex justify-content-md-end"
               ><Multiselect
-                v-model="value"
-                placeholder="Subject"
-                :filter-results="false"
-                :min-chars="0"
-                :resolve-on-load="false"
-                :delay="0"
-                :searchable="true"
-                :options="
-                  async function (query) {
-                    return await fetchLanguages(query) // check JS block for implementation
-                  }
-                " /><CButton
+              v-model="subject"
+              :options="getSubject"
+              searchable
+              mode="single"
+              :filter-results="false"
+              :minChars="0"
+              :delay="500"
+              noOptionsText=""
+              noResultsText=""
+            /><CButton
                 ><font-awesome-icon icon="fa-solid fa-plus" /></CButton
             ></CCol>
           </CRow>
@@ -47,6 +47,7 @@
         :queries="queries"
         hideFilters
         hideItemPerPageSelector
+        hidePagination
         hideIndex
         clickable
         @viewClick="handleView"
@@ -82,6 +83,7 @@
 
     <EditClassModal :visible="showEditClassModal" @close="toggleEditClass" />
   </div>
+</div>
 </template>
 
 <script>
@@ -91,6 +93,7 @@ import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
 import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
 import EditClassModal from '@/components/Modals/EditClassModal.vue'
+import { uploadCsv, downloadSample } from '@/services/schedule'
 
 export default {
   name: 'Schedule',
@@ -105,13 +108,18 @@ export default {
     const datas = ref([])
     const columns = ref([])
     const queries = ref({})
+    const file = ref()
+    const subject = ref()
     // const data = ref([])
 
     return {
+      subject,
+      file,
       value,
       datas,
       columns,
       queries,
+      subjects:  computed(() => store.getters.subjects),
       reformatedSubject: computed(() => store.getters.reformatedSubject),
       showEditSubjectModal: computed(() => store.getters.showEditSubjectModal),
       showEditClassModal: computed(() => store.getters.showEditClassModal),
@@ -133,12 +141,55 @@ export default {
     setQueries() {
       this.queries = this.$route.query
     },
+    chooseFiles: function() {
+        document.getElementById("fileUpload").click()
+    },
+    async uploadFile(){
+      this.file = this.$refs.file.files[0];
+      let formData = new FormData();
+      formData.append('file', this.file);
+      try {
+        const response = await uploadCsv(formData)
+
+        this.$store.dispatch('setSubjects', response)
+        console.log(this.reformatedSubject)
+        this.setDatas()
+        } finally {
+          //this.$router.push({ name: 'SubjectInfo' })
+      }
+    },
+    async getSubject(keyword = ""){
+      try {
+        const response = await this.searchSubject(keyword);
+        console.log(response)
+        return response;
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    },
+    async downloadsample(){
+      try {
+        const response = await downloadSample()
+
+        } finally {
+          //this.$router.push({ name: 'SubjectInfo' })
+      }
+    },
+    searchSubject(key){
+      const filter = key != null ? key.toUpperCase : ""
+      const data = this.subjects.filter((obj) => {
+        var subName = obj.subjectName.toUpperCase()
+        if (subName.search(filter) >= 0) return obj
+      })
+      return data
+    },
     handleView() {
       console.log('view')
     },
     handleEdit(subject) {
-      this.$store.dispatch('setEditedSubjectID', subject.id)
-      this.$store.dispatch('setEditedSubject', subject.id)
+      this.$store.dispatch('setEditedSubjectID', subject.subjectCode)
+      this.$store.dispatch('setEditedSubject', subject.subjectCode)
       this.toggleEditSubject()
     },
     handleDelete() {
