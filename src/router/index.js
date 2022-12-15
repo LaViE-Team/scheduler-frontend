@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routes'
 import nProgress from 'nprogress'
+import { getAccessToken } from '@/utils/cookies'
 
 const router = createRouter({
   history: createWebHistory(
@@ -13,14 +14,21 @@ const router = createRouter({
   // },
 })
 
-router.beforeEach(() => {
+router.beforeEach(async(to, from) => {
   // Start NProgress UI
+  const loggedIn = getAccessToken();
+
+    if (!loggedIn && to.name !== 'Login') {
+        return { name: 'Login' };
+    }
   nProgress.start()
 
+  
   // Remove last trailing slashes
   // if (/\/{1,}$/.test(to.fullPath)) {
   //   return to.fullPath.replace(/\/{1,}$/, '')
   // }
+  
 })
 
 router.afterEach(() => {
