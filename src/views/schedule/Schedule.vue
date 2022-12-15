@@ -94,7 +94,7 @@ import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
 import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
 import EditClassModal from '@/components/Modals/EditClassModal.vue'
-import { uploadCsv, exportSchedule } from '@/services/schedule'
+import { uploadCsv, exportSchedule, getDatas } from '@/services/schedule'
 
 export default {
   name: 'Schedule',
@@ -137,8 +137,18 @@ export default {
         { data: 'time', title: 'Time' },
       ]
     },
-    setDatas() {
+    async setDatas() {
       this.pages = 1
+      try {
+        const response = await getDatas()
+
+        this.$store.dispatch('setSubjects', response)
+        // console.log(this.reformatedSubject)
+        // this.datas = this.reformatedSubject
+      } finally {
+        this.isLoading = false
+        //this.$router.push({ name: 'SubjectInfo' })
+      }
       this.datas = this.reformatedSubject
       // console.log(this.datas)
     },
@@ -158,7 +168,7 @@ export default {
 
         this.$store.dispatch('setSubjects', response)
         // console.log(this.reformatedSubject)
-        this.setDatas()
+        this.datas = this.reformatedSubject
       } finally {
         this.isLoading = false
         //this.$router.push({ name: 'SubjectInfo' })
