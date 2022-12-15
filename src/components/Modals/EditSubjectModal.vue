@@ -56,6 +56,8 @@ import { ref } from '@vue/reactivity'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
+import { updateData } from '@/services/schedule'
+import { useToast } from 'vue-toastification'
 
 export default {
   name: 'EditSubjectModal',
@@ -63,12 +65,14 @@ export default {
     DataTable,
   },
   setup() {
+    const toast = useToast()
     const store = useStore()
     const data = ref([])
     const columns = ref([])
     const classes = ref([])
 
     return {
+      toast,
       columns,
       data,
       showEditClassModal: computed(() => store.getters.showEditClassModal),
@@ -106,8 +110,18 @@ export default {
       this.$store.dispatch('setEditedClassCode', null)
       this.toggleShowEditClassModal()
     },
-    handleDone() {
-      this.$store.dispatch('editSubject', this.data)
+    async handleDone() {
+      await this.$store.dispatch('editSubject', this.data)
+      // console.log(this.$store.getters.subjects)
+      try {
+        const response = await updateData(this.$store.getters.subjects)
+        if (response.status == 'successful'){
+          this.toast.success('Success')
+        }
+        
+      } finally {
+        // this.isSubmiting = false
+      }
       this.$emit('resetHandleGetData')
       this.emitClose()
     },
