@@ -7,10 +7,10 @@ const router = createRouter({
     import.meta ? import.meta?.env?.BASE_URL : process.env.BASE_URL,
   ),
   routes,
-  scrollBehavior() {
-    // always scroll to top
-    return { top: 0 }
-  },
+  // scrollBehavior() {
+  //   // always scroll to top
+  //   return { top: 0 }
+  // },
 })
 
 router.beforeEach(() => {

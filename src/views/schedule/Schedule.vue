@@ -53,8 +53,6 @@
           hideItemPerPageSelector
           hideIndex
           clickable
-          @viewClick="handleView"
-          :hasView="true"
           @editClick="handleEdit"
           :hasEdit="true"
           @deleteClick="handleDelete"
