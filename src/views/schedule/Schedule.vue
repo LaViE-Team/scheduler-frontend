@@ -94,7 +94,9 @@ import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
 import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
 import EditClassModal from '@/components/Modals/EditClassModal.vue'
-import { uploadCsv, exportSchedule } from '@/services/schedule'
+import { uploadCsv, exportSchedule, getDatas } from '@/services/schedule'
+import { useToast } from 'vue-toastification'
+import { object } from 'yup/lib/locale'
 
 export default {
   name: 'Schedule',
@@ -104,6 +106,8 @@ export default {
     EditClassModal,
   },
   setup() {
+    const key = ref()
+    const toast = useToast()
     const store = useStore()
     const value = ref({})
     const datas = ref([])
@@ -115,6 +119,8 @@ export default {
     // const data = ref([])
 
     return {
+      key,
+      toast,
       isLoading,
       subject,
       file,
@@ -137,9 +143,19 @@ export default {
         { data: 'time', title: 'Time' },
       ]
     },
-    setDatas() {
+    async setDatas() {
       this.pages = 1
-      this.datas = this.reformatedSubject
+      try {
+        const response = await getDatas()
+
+        this.$store.dispatch('setSubjects', response)
+        // console.log(this.reformatedSubject)
+        this.datas = this.reformatedSubject
+      } finally {
+        this.isLoading = false
+        //this.$router.push({ name: 'SubjectInfo' })
+      }
+      // this.datas = this.reformatedSubject
       // console.log(this.datas)
     },
     setQueries() {
@@ -155,7 +171,7 @@ export default {
       formData.append('file', this.file)
       try {
         const response = await uploadCsv(formData)
-
+        console.log(response)
         this.$store.dispatch('setSubjects', response)
         // console.log(this.reformatedSubject)
         this.setDatas()
@@ -177,11 +193,13 @@ export default {
     downloadsample() {
       window.open('https://api.lavieteam.works/csv/download-sample')
     },
-    searchSubject(key) {
-      const filter = key != null ? key.toUpperCase : ''
-      const data = this.subjects.filter((obj) => {
+    searchSubject(key = '') {
+      const filter = key != null ? key.toUpperCase() : ''
+      this.key = key != null ? key : ''
+      var data = [] 
+      this.subjects.forEach((obj) => {
         var subName = obj.subjectName.toUpperCase()
-        if (subName.search(filter) >= 0) return obj
+        if (subName.search(filter) >= 0) data.push({value:obj.subjectCode, label:obj.subjectName})
       })
       return data
     },
@@ -267,6 +285,9 @@ export default {
     this.setQueries()
     this.setDatas()
     this.$watch(
+      () => {
+        this.key
+      },
       () => this.reformatedSubject,
       () => this.$route.query,
       () => {

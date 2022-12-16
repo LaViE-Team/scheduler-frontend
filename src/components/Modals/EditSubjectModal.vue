@@ -106,8 +106,17 @@ export default {
       this.$store.dispatch('setEditedClassCode', null)
       this.toggleShowEditClassModal()
     },
-    handleDone() {
-      this.$store.dispatch('editSubject', this.data)
+    async handleDone() {
+      await this.$store.dispatch('editSubject', this.data)
+      // console.log(this.$store.getters.subjects)
+      // try {
+      //   const response = await updateData(this.$store.getters.subjects)
+      //   if (response.status == 'successful') {
+      //     this.toast.success('Success')
+      //   }
+      // } finally {
+      //   // this.isSubmiting = false
+      // }
       this.$emit('resetHandleGetData')
       this.emitClose()
     },

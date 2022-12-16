@@ -14,21 +14,20 @@ const router = createRouter({
   // },
 })
 
-router.beforeEach(async(to, from) => {
-  // Start NProgress UI
-  const loggedIn = getAccessToken();
+router.beforeEach(async (to, from) => {
+  
+  const loggedIn = getAccessToken()
 
-    if (!loggedIn && to.name !== 'Login') {
-        return { name: 'Login' };
-    }
+  if (!loggedIn && to.name !== 'Login') {
+    if (to.name !== 'Register') return { name: 'Login' }
+  }
+  // Start NProgress UI
   nProgress.start()
 
-  
   // Remove last trailing slashes
   // if (/\/{1,}$/.test(to.fullPath)) {
   //   return to.fullPath.replace(/\/{1,}$/, '')
   // }
-  
 })
 
 router.afterEach(() => {

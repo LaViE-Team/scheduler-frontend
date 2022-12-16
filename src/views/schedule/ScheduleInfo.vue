@@ -9,10 +9,17 @@
         </CCol>
         <CCol xs="5" class="d-grid gap-2 d-md-flex justify-content-md-end">
           <CDropdown color="primary">
-            <CDropdownToggle color="primary">Type of Schedule </CDropdownToggle>
+            <CDropdownToggle color="primary">{{ type }} </CDropdownToggle>
             <CDropdownMenu>
-              <CDropdownItem href="#">High Density</CDropdownItem>
-              <CDropdownItem href="#">Low Density</CDropdownItem>
+              <CDropdownItem role="button" @click="choosetype(1)"
+                >Type of Schedule</CDropdownItem
+              >
+              <CDropdownItem role="button" @click="choosetype(2)"
+                >High Density</CDropdownItem
+              >
+              <CDropdownItem role="button" @click="choosetype(3)"
+                >Low Density</CDropdownItem
+              >
             </CDropdownMenu>
           </CDropdown>
         </CCol>
@@ -55,11 +62,110 @@ export default {
   setup() {
     const store = useStore()
     const value = ref({})
-    const datas = ref([])
+    const datas = ref([
+      {
+        time: {
+          startTime: '06:45',
+          endTime: '08:10',
+        },
+        Mon: '',
+        Tue: '',
+        Wed: '',
+        Thu: '',
+        Fri: '',
+        Sat: '',
+        Sun: '',
+      },
+      {
+        time: {
+          startTime: '08:25',
+          endTime: '10:05',
+        },
+        Mon: '',
+        Tue: '',
+        Wed: '',
+        Thu: '',
+        Fri: '',
+        Sat: '',
+        Sun: '',
+      },
+      {
+        time: {
+          startTime: '10:15',
+          endTime: '11:45',
+        },
+        Mon: '',
+        Tue: '',
+        Wed: '',
+        Thu: '',
+        Fri: '',
+        Sat: '',
+        Sun: '',
+      },
+      {
+        time: {
+          startTime: '12:30',
+          endTime: '14:00',
+        },
+        Mon: '',
+        Tue: '',
+        Wed: '',
+        Thu: '',
+        Fri: '',
+        Sat: '',
+        Sun: '',
+      },
+      {
+        time: {
+          startTime: '14:05',
+          endTime: '15:50',
+        },
+        Mon: '',
+        Tue: '',
+        Wed: '',
+        Thu: '',
+        Fri: '',
+        Sat: '',
+        Sun: '',
+      },
+      {
+        time: {
+          startTime: '16:05',
+          endTime: '17:30',
+        },
+        Mon: '',
+        Tue: '',
+        Wed: '',
+        Thu: '',
+        Fri: '',
+        Sat: '',
+        Sun: '',
+      },
+    ])
     const columns = ref([])
     const queries = ref({})
+    const types = ref([
+      {
+        id: 1,
+        name: 'Type of Schedule',
+        type: 'all',
+      },
+      {
+        id: 2,
+        name: 'High Density',
+        type: 'highDentisy',
+      },
+      {
+        id: 3,
+        name: 'Low Density',
+        type: 'lowDentisy',
+      },
+    ])
+    const type = ref('Type of Schedule')
 
     return {
+      types,
+      type,
       value,
       datas,
       columns,
@@ -80,104 +186,39 @@ export default {
         { data: 'Sun', title: 'Sun' },
       ]
     },
-    setDatas(page = 0) {
-      this.pages = this.schedules.highDensity
-        ? this.schedules.highDensity.length
-        : 1
-      this.datas = [
-        {
-          time: {
-            startTime: '06:45',
-            endTime: '08:10',
-          },
-          Mon: '',
-          Tue: '',
-          Wed: '',
-          Thu: '',
-          Fri: '',
-          Sat: '',
-          Sun: '',
-        },
-        {
-          time: {
-            startTime: '08:25',
-            endTime: '10:05',
-          },
-          Mon: '',
-          Tue: '',
-          Wed: '',
-          Thu: '',
-          Fri: '',
-          Sat: '',
-          Sun: '',
-        },
-        {
-          time: {
-            startTime: '10:15',
-            endTime: '11:45',
-          },
-          Mon: '',
-          Tue: '',
-          Wed: '',
-          Thu: '',
-          Fri: '',
-          Sat: '',
-          Sun: '',
-        },
-        {
-          time: {
-            startTime: '12:30',
-            endTime: '14:00',
-          },
-          Mon: '',
-          Tue: '',
-          Wed: '',
-          Thu: '',
-          Fri: '',
-          Sat: '',
-          Sun: '',
-        },
-        {
-          time: {
-            startTime: '14:05',
-            endTime: '15:50',
-          },
-          Mon: '',
-          Tue: '',
-          Wed: '',
-          Thu: '',
-          Fri: '',
-          Sat: '',
-          Sun: '',
-        },
-        {
-          time: {
-            startTime: '16:05',
-            endTime: '17:30',
-          },
-          Mon: '',
-          Tue: '',
-          Wed: '',
-          Thu: '',
-          Fri: '',
-          Sat: '',
-          Sun: '',
-        },
-      ]
-      if (this.schedules.highDensity) {
-        this.datas.forEach((e) => {
-          this.schedules.highDensity[page].forEach((day) => {
-            day.time.forEach((time) => {
-              if (
-                this.compareTime(time.startTime, e.time.startTime) <= 0 &&
-                this.compareTime(e.time.endTime, time.endTime) <= 0
-              ) {
-                e[time.day] = day.subjectName + '(' + day.classCode + ')'
-              }
-            })
-          })
-        })
-      }
+    choosetype(type) {
+      var typeSchedule = ''
+      this.types.forEach((e) => {
+        if (e.id == type) {
+          typeSchedule = e.type
+          this.type = e.name
+        }
+      })
+
+      this.$router.push({
+        query: { ...this.queries, type: typeSchedule },
+      })
+    },
+    setDatas(page = 0, type = 'all') {
+      
+      var schedules = []
+      if (type == 'all') schedules = this.schedules.highDensity.concat(this.schedules.lowDentisy)
+      console.log(this.schedules.lowDentisy)
+      this.pages = schedules.length
+      // if (this.schedules.highDensity) {
+      //   this.datas.forEach((e) => {
+      //     this.schedules.highDensity[page].forEach((day) => {
+      //       day.time.forEach((time) => {
+      //         if (
+      //           this.compareTime(time.startTime, e.time.startTime) <= 0 &&
+      //           this.compareTime(e.time.endTime, time.endTime) <= 0
+      //         ) {
+      //           e[time.day] = day.subjectName + '(' + day.classCode + ')'
+      //         }
+      //       })
+      //     })
+      //   })
+      // }
     },
     compareTime(str1, str2) {
       if (str1 === str2) {
@@ -216,7 +257,9 @@ export default {
       async () => {
         if (this.$route.name === 'ScheduleInfo') {
           this.setQueries()
-          await this.setDatas(this.queries.page - 1)
+          // console.log(this.schedules.highDensity)
+          const page = this.queries.page ? this.queries.page - 1 : 0
+          await this.setDatas(page)
         }
       },
     )

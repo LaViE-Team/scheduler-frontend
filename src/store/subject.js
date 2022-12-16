@@ -1,60 +1,60 @@
 export default {
   state: () => ({
     subjects: [
-      // {
-      //   subjectName: 'C Intro',
-      //   subjectCode: 'IT123',
-      //   classes: [
-      //     {
-      //       classCode: '101001',
-      //       time: [
-      //         { day: 'Mon', startTime: '06:45', endTime: '08:00' },
-      //         { day: 'Tue', startTime: '06:45', endTime: '08:00' },
-      //       ],
-      //     },
-      //     {
-      //       classCode: '101002',
-      //       time: [
-      //         { day: 'Wed', startTime: '06:45', endTime: '08:00' },
-      //         { day: 'Thu', startTime: '06:45', endTime: '08:00' },
-      //       ],
-      //     },
-      //   ],
-      // },
-      // {
-      //   subjectName: 'C Basic',
-      //   subjectCode: 'IT124',
-      //   classes: [
-      //     {
-      //       classCode: '101003',
-      //       time: [
-      //         { day: 'Mon', startTime: '06:45', endTime: '08:00' },
-      //         { day: 'Tue', startTime: '06:45', endTime: '08:00' },
-      //       ],
-      //     },
-      //     {
-      //       classCode: '101004',
-      //       time: [
-      //         { day: 'Wed', startTime: '06:45', endTime: '08:00' },
-      //         { day: 'Thu', startTime: '06:45', endTime: '08:00' },
-      //       ],
-      //     },
-      //   ],
-      // },
-      // {
-      //   subjectName: 'C Advanced',
-      //   subjectCode: 'IT125',
-      //   classes: [
-      //     {
-      //       classCode: '101005',
-      //       time: [{ day: 'Tue', startTime: '06:45', endTime: '08:00' }],
-      //     },
-      //     {
-      //       classCode: '101006',
-      //       time: [{ day: 'Thu', startTime: '06:45', endTime: '20:00' }],
-      //     },
-      //   ],
-      // },
+      {
+        subjectName: 'C Intro',
+        subjectCode: 'IT123',
+        classes: [
+          {
+            classCode: '101001',
+            time: [
+              { day: 'Mon', startTime: '06:45', endTime: '08:00' },
+              { day: 'Tue', startTime: '06:45', endTime: '08:00' },
+            ],
+          },
+          {
+            classCode: '101002',
+            time: [
+              { day: 'Wed', startTime: '06:45', endTime: '08:00' },
+              { day: 'Thu', startTime: '06:45', endTime: '08:00' },
+            ],
+          },
+        ],
+      },
+      {
+        subjectName: 'C Basic',
+        subjectCode: 'IT124',
+        classes: [
+          {
+            classCode: '101003',
+            time: [
+              { day: 'Mon', startTime: '06:45', endTime: '08:00' },
+              { day: 'Tue', startTime: '06:45', endTime: '08:00' },
+            ],
+          },
+          {
+            classCode: '101004',
+            time: [
+              { day: 'Wed', startTime: '06:45', endTime: '08:00' },
+              { day: 'Thu', startTime: '06:45', endTime: '08:00' },
+            ],
+          },
+        ],
+      },
+      {
+        subjectName: 'C Advanced',
+        subjectCode: 'IT125',
+        classes: [
+          {
+            classCode: '101005',
+            time: [{ day: 'Tue', startTime: '06:45', endTime: '08:00' }],
+          },
+          {
+            classCode: '101006',
+            time: [{ day: 'Thu', startTime: '06:45', endTime: '20:00' }],
+          },
+        ],
+      },
     ],
     schedules: [],
     showEditSubjectModal: false,
