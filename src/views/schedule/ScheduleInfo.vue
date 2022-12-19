@@ -65,6 +65,67 @@ export default {
     const store = useStore()
     const value = ref({})
     const datas = ref([
+      
+    ])
+    const columns = ref([])
+    const queries = ref({})
+    const types = ref([
+      {
+        id: 1,
+        name: 'Type of Schedule',
+        type: 'all',
+      },
+      {
+        id: 2,
+        name: 'High Density',
+        type: 'highDensity',
+      },
+      {
+        id: 3,
+        name: 'Low Density',
+        type: 'lowDensity',
+      },
+    ])
+    const type = ref('Type of Schedule')
+
+    return {
+      types,
+      type,
+      value,
+      datas,
+      columns,
+      queries,
+      schedules: computed(() => store.getters.schedules),
+    }
+  },
+  methods: {
+    setColumns() {
+      this.columns = [
+        { data: 'time', title: 'Time' },
+        { data: 'Mon', title: 'Mon' },
+        { data: 'Tue', title: 'Tue' },
+        { data: 'Wed', title: 'Wed' },
+        { data: 'Thu', title: 'Thu' },
+        { data: 'Fri', title: 'Fri' },
+        { data: 'Sat', title: 'Sat' },
+        { data: 'Sun', title: 'Sun' },
+      ]
+    },
+    choosetype(type) {
+      var typeSchedule = ''
+      this.types.forEach((e) => {
+        if (e.id == type) {
+          typeSchedule = e.type
+          this.type = e.name
+        }
+      })
+
+      this.$router.push({
+        query: { ...this.queries, type: typeSchedule },
+      })
+    },
+    setDatas(page = 0, type = 'all') {
+      this.datas = [
       {
         time: {
           startTime: '06:45',
@@ -143,65 +204,7 @@ export default {
         Sat: '',
         Sun: '',
       },
-    ])
-    const columns = ref([])
-    const queries = ref({})
-    const types = ref([
-      {
-        id: 1,
-        name: 'Type of Schedule',
-        type: 'all',
-      },
-      {
-        id: 2,
-        name: 'High Density',
-        type: 'highDensity',
-      },
-      {
-        id: 3,
-        name: 'Low Density',
-        type: 'lowDensity',
-      },
-    ])
-    const type = ref('Type of Schedule')
-
-    return {
-      types,
-      type,
-      value,
-      datas,
-      columns,
-      queries,
-      schedules: computed(() => store.getters.schedules),
-    }
-  },
-  methods: {
-    setColumns() {
-      this.columns = [
-        { data: 'time', title: 'Time' },
-        { data: 'Mon', title: 'Mon' },
-        { data: 'Tue', title: 'Tue' },
-        { data: 'Wed', title: 'Wed' },
-        { data: 'Thu', title: 'Thu' },
-        { data: 'Fri', title: 'Fri' },
-        { data: 'Sat', title: 'Sat' },
-        { data: 'Sun', title: 'Sun' },
       ]
-    },
-    choosetype(type) {
-      var typeSchedule = ''
-      this.types.forEach((e) => {
-        if (e.id == type) {
-          typeSchedule = e.type
-          this.type = e.name
-        }
-      })
-
-      this.$router.push({
-        query: { ...this.queries, type: typeSchedule },
-      })
-    },
-    setDatas(page = 0, type = 'all') {
       var schedules = []
       if (type == 'all' || type == null) {
         schedules.push(...this.schedules.highDensity)
