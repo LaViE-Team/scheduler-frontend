@@ -15,12 +15,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-  
   const loggedIn = getAccessToken()
 
-  if (!loggedIn && to.name !== 'Login') {
-    if (to.name !== 'Register') return { name: 'Login' }
-  }
+  // if (!loggedIn && to.name !== 'Login') {
+  //   if (to.name !== 'Register') return { name: 'Login' }
+  // }
   // Start NProgress UI
   nProgress.start()
 

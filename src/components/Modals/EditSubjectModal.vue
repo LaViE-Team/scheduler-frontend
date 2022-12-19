@@ -5,14 +5,30 @@
         <CRow class="mb-4">
           <CCol sm="3">
             <CFormLabel for="subjectName" class="col-form-label fw-semibold">
-              Subject
+              Subject Name
             </CFormLabel>
           </CCol>
           <CCol sm="6">
             <CFormInput
+              v-model="subjectName"
               type="text"
               id="subjectName"
               :value="data.subjectName"
+              required
+            />
+          </CCol>
+        </CRow>
+        <CRow v-if="isNew" class="mb-4">
+          <CCol sm="3">
+            <CFormLabel for="subjectName" class="col-form-label fw-semibold">
+              Subject Code
+            </CFormLabel>
+          </CCol>
+          <CCol sm="6">
+            <CFormInput
+              v-model="subjectCode"
+              type="text"
+              id="subjectCode"
               required
             />
           </CCol>
@@ -56,6 +72,8 @@ import { ref } from '@vue/reactivity'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import DataTable from '@/components/Common/DataTable.vue'
+import { updateData } from '@/services/schedule'
+import { useToast } from 'vue-toastification'
 
 export default {
   name: 'EditSubjectModal',
@@ -63,12 +81,20 @@ export default {
     DataTable,
   },
   setup() {
+    const isNew = ref(false)
+    const subjectName = ref()
+    const subjectCode = ref()
+    const toast = useToast()
     const store = useStore()
-    const data = ref([])
+    const data = ref({})
     const columns = ref([])
     const classes = ref([])
 
     return {
+      isNew,
+      subjectName,
+      subjectCode,
+      toast,
       columns,
       data,
       showEditClassModal: computed(() => store.getters.showEditClassModal),
@@ -85,6 +111,15 @@ export default {
     },
     setDatas() {
       this.data = this.$store.getters.getEditedSubject
+      console.log(this.data)
+      if (this.data.subjectCode) {
+        console.log(1)
+        this.isNew = false
+      } else {
+        this.isNew = true
+      }
+      // console.log(this.data)
+      this.subjectName = this.data.subjectName
     },
     emitClose() {
       this.$emit('close')
@@ -107,18 +142,40 @@ export default {
       this.toggleShowEditClassModal()
     },
     async handleDone() {
-      await this.$store.dispatch('editSubject', this.data)
-      // console.log(this.$store.getters.subjects)
-      // try {
-      //   const response = await updateData(this.$store.getters.subjects)
-      //   if (response.status == 'successful') {
-      //     this.toast.success('Success')
-      //   }
-      // } finally {
-      //   // this.isSubmiting = false
-      // }
-      this.$emit('resetHandleGetData')
-      this.emitClose()
+      if (!this.isNew) {
+        this.data.subjectName = this.subjectName
+        await this.$store.dispatch('editSubject', this.data)
+        console.log(this.$store.getters.subjects)
+        try {
+          const response = await updateData(this.$store.getters.allSubjects)
+          if (response.status == 'successful') {
+            this.toast.success('Success')
+          }
+        } finally {
+          // this.isSubmiting = false
+        }
+        this.$emit('resetHandleGetData')
+        this.emitClose()
+      } else {
+        this.data = {
+          ...this.data,
+          subjectCode : this.subjectCode
+        }
+        await this.$store.dispatch('addSubject', this.data)
+        // console.log(this.$store.getters.allSubjects)
+        try {
+          const response = await updateData(this.$store.getters.allSubjects)
+          if (response.status == 'successful') {
+            this.toast.success('Success')
+          }
+        } finally {
+          // this.isSubmiting = false
+        }
+        this.$emit('resetHandleGetData')
+        this.emitClose()
+
+      }
+      
     },
   },
   created() {

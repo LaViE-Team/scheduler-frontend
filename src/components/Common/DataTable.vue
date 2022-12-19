@@ -101,7 +101,7 @@
       </CTableHead>
 
       <CTableBody>
-        <template v-if="!isLoading && datas.length > 0">
+        <template v-if="!isLoading">
           <CTableRow
             v-for="(data, index) in datas"
             :key="data.id"

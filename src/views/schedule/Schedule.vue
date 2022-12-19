@@ -30,16 +30,19 @@
             <CRow>
               <CCol xs="8" class="d-grid gap-2 d-md-flex justify-content-md-end"
                 ><Multiselect
-                  v-model="subject"
-                  :options="getSubject"
-                  searchable
-                  mode="single"
-                  :filter-results="false"
-                  :minChars="0"
-                  :delay="500"
-                  noOptionsText=""
-                  noResultsText="" /><CButton
-                  ><font-awesome-icon icon="fa-solid fa-plus" /></CButton
+                    ref="selected"
+                    v-model="subject"
+                    :options="getSubject"
+                    searchable
+                    mode="single"
+                    :filter-results="false"
+                    :minChars="0"
+                    :delay="500"
+                    noOptionsText=""
+                    noResultsText="" /><CButton
+                  ><font-awesome-icon
+                    @click="handleAdd"
+                    icon="fa-solid fa-plus" /></CButton
               ></CCol>
             </CRow>
           </CCol>
@@ -91,16 +94,17 @@
 import { ref } from '@vue/reactivity'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { Form } from 'vee-validate'
 import DataTable from '@/components/Common/DataTable.vue'
 import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
 import EditClassModal from '@/components/Modals/EditClassModal.vue'
-import { uploadCsv, exportSchedule, getDatas } from '@/services/schedule'
+import { uploadCsv, exportSchedule, getDatas, getSampleCsv } from '@/services/schedule'
 import { useToast } from 'vue-toastification'
-import { object } from 'yup/lib/locale'
 
 export default {
   name: 'Schedule',
   components: {
+    Form,
     DataTable,
     EditSubjectModal,
     EditClassModal,
@@ -116,10 +120,12 @@ export default {
     const isLoading = ref(false)
     const file = ref()
     const subject = ref()
+    const pages = ref(1)
     // const data = ref([])
 
     return {
       key,
+      pages,
       toast,
       isLoading,
       subject,
@@ -128,6 +134,7 @@ export default {
       datas,
       columns,
       queries,
+      allSubjects: computed(() => store.getters.allSubjects),
       subjects: computed(() => store.getters.subjects),
       reformatedSubject: computed(() => store.getters.reformatedSubject),
       showEditSubjectModal: computed(() => store.getters.showEditSubjectModal),
@@ -144,13 +151,15 @@ export default {
       ]
     },
     async setDatas() {
-      this.pages = 1
+      // this.pages = 1
       try {
         const response = await getDatas()
 
-        this.$store.dispatch('setSubjects', response)
+        this.$store.dispatch('setAllSubjects', response)
         // console.log(this.reformatedSubject)
+        // console.log(this.allSubjects)
         this.datas = this.reformatedSubject
+        this.$refs.selected.refreshOptions();
       } finally {
         this.isLoading = false
         //this.$router.push({ name: 'SubjectInfo' })
@@ -171,10 +180,10 @@ export default {
       formData.append('file', this.file)
       try {
         const response = await uploadCsv(formData)
-        console.log(response)
-        this.$store.dispatch('setSubjects', response)
-        // console.log(this.reformatedSubject)
-        this.setDatas()
+        // console.log(response)
+        this.$store.dispatch('setAllSubjects', response)
+        // console.log(this.$store.getters.allSubjects)
+        this.datas = this.reformatedSubject
       } finally {
         this.isLoading = false
         //this.$router.push({ name: 'SubjectInfo' })
@@ -183,25 +192,54 @@ export default {
     async getSubject(keyword = '') {
       try {
         const response = await this.searchSubject(keyword)
-        // console.log(response)
+        console.log(response)
         return response
       } catch (error) {
         console.error(error)
         return []
       }
     },
-    downloadsample() {
-      window.open('https://api.lavieteam.works/csv/download-sample')
-    },
     searchSubject(key = '') {
       const filter = key != null ? key.toUpperCase() : ''
       this.key = key != null ? key : ''
-      var data = [] 
-      this.subjects.forEach((obj) => {
+      var data = []
+      this.allSubjects.forEach((obj) => {
         var subName = obj.subjectName.toUpperCase()
-        if (subName.search(filter) >= 0) data.push({value:obj.subjectCode, label:obj.subjectName})
+        if (subName.search(filter) >= 0 && !this.subjects.map(e => {return e.subjectCode} ).includes(obj.subjectCode))
+          data.push({ value: obj.subjectCode, label: obj.subjectName })
       })
       return data
+    },
+    handleAdd() {
+      if (this.subject) {
+        const result = this.allSubjects.filter((obj) => {
+          return obj.subjectCode == this.subject
+        })
+        this.$store.dispatch('addSubject', result[0])
+        this.datas = this.reformatedSubject
+        this.$refs.selected.clear();
+        this.$refs.selected.refreshOptions();
+      } else {
+        this.$store.dispatch('setSubjectName', this.key)
+        this.$store.dispatch('setEditedSubjectID', '')
+        this.$store.dispatch('setEditedSubject', null)
+        
+        this.toggleEditSubject()
+        // console.log(this.key)
+      }
+    },
+    async downloadsample() {
+      try {
+        const response = await getSampleCsv()
+        var fileURL = window.URL.createObjectURL(new Blob([response]));
+        var fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'sample.csv');
+        document.body.appendChild(fileLink);
+        fileLink.click();
+      } catch (error) {
+        console.log(error)
+      }
     },
     handleView() {
       console.log('view')
@@ -211,8 +249,13 @@ export default {
       this.$store.dispatch('setEditedSubject', subject.subjectCode)
       this.toggleEditSubject()
     },
-    handleDelete() {
-      console.log('delete')
+    handleDelete(subject) {
+      // this.$store.dispatch('deleteSubject', subject.subjectCode)
+      this.datas = this.reformatedSubject
+      this.$refs.selected.refreshOptions();
+      console.log(this.$store.getters.allSubjects)
+      // console.log(this.subjects)
+      // console.log(subject)
     },
     async clickDone() {
       const subjectCodes = this.datas.map((e) => {
@@ -222,7 +265,7 @@ export default {
         const response = await exportSchedule(subjectCodes)
 
         this.$store.dispatch('setSchedules', response)
-        console.log(this.$store.getters.schedules)
+        // console.log(this.$store.getters.schedules)
         // console.log(this.reformatedSubject)
       } finally {
         // this.isLoading = false
@@ -237,58 +280,23 @@ export default {
     toggleEditClass() {
       this.$store.dispatch('toggleEditClass')
     },
-
-    async fetchLanguages(query) {
-      // From: https://www.back4app.com/database/paul-datasets/list-of-all-programming-languages/get-started/javascript/rest-api/fetch?objectClassSlug=dataset
-
-      let where = ''
-
-      if (query) {
-        where =
-          '&where=' +
-          encodeURIComponent(
-            JSON.stringify({
-              ProgrammingLanguage: {
-                $regex: `${query}|${query.toUpperCase()}|${
-                  query[0].toUpperCase() + query.slice(1)
-                }`,
-              },
-            }),
-          )
-      }
-
-      const response = await fetch(
-        'https://parseapi.back4app.com/classes/All_Programming_Languages?limit=9999&order=ProgrammingLanguage&keys=ProgrammingLanguage' +
-          where,
-        {
-          headers: {
-            'X-Parse-Application-Id':
-              'XpRShKqJcxlqE5EQKs4bmSkozac44osKifZvLXCL', // This is the fake app's application id
-            'X-Parse-Master-Key': 'Mr2UIBiCImScFbbCLndBv8qPRUKwBAq27plwXVuv', // This is the fake app's readonly master key
-          },
-        },
-      )
-
-      const data = await response.json() // Here you have the data that you need
-
-      return data.results.map((item) => {
-        return {
-          value: item.ProgrammingLanguage,
-          label: item.ProgrammingLanguage,
-        }
-      })
-    },
   },
 
   async created() {
+    await this.setDatas()
     this.setColumns()
     this.setQueries()
-    this.setDatas()
+    
     this.$watch(
       () => {
         this.key
       },
-      () => this.reformatedSubject,
+      () => {
+        this.subjects
+      },
+      () => {
+        this.reformatedSubject
+      },
       () => this.$route.query,
       () => {
         this.showEditSubjectModal, this.toggleEditSubject()

@@ -127,7 +127,7 @@ export default {
         const response = await login(body)
 
         if (response) {
-          setAccessToken(response.access_token, {
+          await setAccessToken(response.access_token, {
             expires: new Date(Date.now() + response.expires_in * 1000),
           })
 
