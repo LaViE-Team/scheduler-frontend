@@ -13,7 +13,7 @@
                 xs="6"
                 class="d-grid gap-2 d-md-flex justify-content-md-start"
               >
-                <p>{{ timetable.export_date }}</p>
+                <p>Export date: {{ new Date(timetable.created_at).toISOString().replace('-', '/').split('T')[0].replace('-', '/') }}</p>
               </CCol>
               <CCol
                 xs="6"
