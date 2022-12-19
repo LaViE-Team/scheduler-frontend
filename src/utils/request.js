@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
 import { useToast } from 'vue-toastification'
-import { getAccessToken, removeAccessToken } from '@/utils/cookies'
+import { getAccessToken, removeAccessToken, removeUserName } from '@/utils/cookies'
 import Router from '@/router'
 
 const toast = useToast()
@@ -51,6 +51,7 @@ service.interceptors.response.use(
     // when token expired - 401
     if (error.response.status === StatusCodes.UNAUTHORIZED) {
       removeAccessToken()
+      removeUserName()
       // push to error page
 
       Router.push({ name: 'Login' })

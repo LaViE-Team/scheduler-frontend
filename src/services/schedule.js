@@ -8,6 +8,14 @@ export function uploadCsv(data) {
   })
 }
 
+export function downloadSample() {
+  return request({
+    url: '/csv/download-sample',
+    method: 'get',
+    responseType: 'blob',
+  })
+}
+
 export function updateData(data) {
   return request({
     url: '/csv/update-cached-csv',
@@ -22,6 +30,7 @@ export function getDatas() {
     method: 'get',
   })
 }
+
 
 export function exportSchedule(data) {
   return request({
