@@ -98,7 +98,7 @@ import { Form } from 'vee-validate'
 import DataTable from '@/components/Common/DataTable.vue'
 import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
 import EditClassModal from '@/components/Modals/EditClassModal.vue'
-import { uploadCsv, exportSchedule, getDatas, getSampleCsv } from '@/services/schedule'
+import { uploadCsv, exportSchedule, getDatas, downloadSample } from '@/services/schedule'
 import { useToast } from 'vue-toastification'
 
 export default {
@@ -230,7 +230,7 @@ export default {
     },
     async downloadsample() {
       try {
-        const response = await getSampleCsv()
+        const response = await downloadSample()
         var fileURL = window.URL.createObjectURL(new Blob([response]));
         var fileLink = document.createElement('a');
         fileLink.href = fileURL;

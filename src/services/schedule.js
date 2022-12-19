@@ -8,7 +8,7 @@ export function uploadCsv(data) {
   })
 }
 
-export function getSampleCsv() {
+export function downloadSample() {
   return request({
     url: '/csv/download-sample',
     method: 'get',
@@ -30,6 +30,7 @@ export function getDatas() {
     method: 'get',
   })
 }
+
 
 export function exportSchedule(data) {
   return request({

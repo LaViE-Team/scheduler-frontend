@@ -209,6 +209,9 @@ export default {
       // console.log(index)
       state.subjects.splice(index, 1)
     },
+    deleteAllSubject(state){
+      state.subjects = []
+    }
   },
   actions: {
     setAllSubjects(context, payload) {
@@ -249,6 +252,9 @@ export default {
     },
     deleteSubject(context, payload) {
       return context.commit('deleteSubject', payload)
+    },
+    deleteAllSubject(context) {
+      return context.commit('deleteAllSubject')
     },
   },
 }
