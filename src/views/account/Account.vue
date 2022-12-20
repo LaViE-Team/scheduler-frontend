@@ -23,8 +23,7 @@
                 as="CFormInput"
                 name="oldPassword"
                 type="password"
-                id="inputPassword"
-                required
+                id="oldPassword"
                 :invalid="!!errors?.oldPassword"
                 :feedback-invalid="errors?.oldPassword"
               />
@@ -35,15 +34,14 @@
               for="inputConfirmPassword"
               class="col-sm-2 col-form-label fw-semibold"
             >
-              Confirm Password
+              New Password
             </CFormLabel>
             <div class="col-sm-4">
               <Field
                 as="CFormInput"
                 name="newPassword"
                 type="password"
-                id="inputConfirmPassword"
-                required
+                id="newPassword"
                 :invalid="!!errors?.newPassword"
                 :feedback-invalid="errors?.newPassword"
               />
@@ -113,13 +111,12 @@ export default {
         this.toast.success('Success')
         this.oldPassword = ""
         this.newPassword = ""
-        this.$refs.myForm.resetForm()
+        
         // this.$store.dispatch('setSchedules', response)
         // console.log(this.$store.getters.schedules)
         // console.log(this.reformatedSubject)
       } finally {
-        // this.isLoading = false
-        // this.$router.push({ name: 'ScheduleInfo' })
+        this.$refs.myForm.resetForm()
       }
       // await console.log('update')
     },
