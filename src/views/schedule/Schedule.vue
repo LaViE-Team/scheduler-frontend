@@ -192,7 +192,7 @@ export default {
     async getSubject(keyword = '') {
       try {
         const response = await this.searchSubject(keyword)
-        console.log(response)
+        // console.log(response)
         return response
       } catch (error) {
         console.error(error)
@@ -250,10 +250,10 @@ export default {
       this.toggleEditSubject()
     },
     handleDelete(subject) {
-      // this.$store.dispatch('deleteSubject', subject.subjectCode)
+      this.$store.dispatch('deleteSubject', subject.subjectCode)
       this.datas = this.reformatedSubject
       this.$refs.selected.refreshOptions();
-      console.log(this.$store.getters.allSubjects)
+      // console.log(this.$store.getters.allSubjects)
       // console.log(this.subjects)
       // console.log(subject)
     },
