@@ -182,6 +182,8 @@ export default {
         const response = await uploadCsv(formData)
         // console.log(response)
         this.$store.dispatch('setAllSubjects', response)
+        this.toast.success('Upload Success')
+        this.$refs.selected.refreshOptions();
         // console.log(this.$store.getters.allSubjects)
         this.datas = this.reformatedSubject
       } finally {

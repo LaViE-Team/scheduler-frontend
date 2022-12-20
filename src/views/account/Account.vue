@@ -2,7 +2,7 @@
   <div>
     <CCard class="p-5">
       <CCardBody>
-        <CForm>
+        <Form ref="myForm" as="CForm" v-slot="{ errors }" @submit="handleUpdate" :validation-schema="schema">
           <CRow class="mb-3 justify-content-center">
             <CFormLabel class="col-sm-2 col-form-label fw-semibold">
               Username
@@ -19,11 +19,14 @@
               Password
             </CFormLabel>
             <div class="col-sm-4">
-              <CFormInput
-                v-model="oldPassword"
+              <Field
+                as="CFormInput"
+                name="oldPassword"
                 type="password"
                 id="inputPassword"
                 required
+                :invalid="!!errors?.oldPassword"
+                :feedback-invalid="errors?.oldPassword"
               />
             </div>
           </CRow>
@@ -35,11 +38,14 @@
               Confirm Password
             </CFormLabel>
             <div class="col-sm-4">
-              <CFormInput
-                v-model="newPassword"
+              <Field
+                as="CFormInput"
+                name="newPassword"
                 type="password"
                 id="inputConfirmPassword"
                 required
+                :invalid="!!errors?.newPassword"
+                :feedback-invalid="errors?.newPassword"
               />
             </div>
           </CRow>
@@ -49,13 +55,12 @@
                 type="submit"
                 color="primary"
                 class="min-update-width"
-                @click.prevent="handleUpdate"
               >
                 Update
               </CButton>
             </div>
           </CRow>
-        </CForm>
+        </Form>
       </CCardBody>
     </CCard>
   </div>
@@ -66,10 +71,17 @@ import { getUserName } from '@/utils/cookies'
 import { ref } from '@vue/reactivity'
 import { useToast } from 'vue-toastification'
 import { changePassword } from '@/services/acount'
+import { Form, Field } from 'vee-validate'
+import * as yup from 'yup'
 
 export default {
   name: 'Schedule',
+  components: {
+    Form,
+    Field,
+  },
   setup() {
+    const schema = ref({})
     const username = ref('')
     const oldPassword = ref('')
     const newPassword = ref('')
@@ -77,6 +89,7 @@ export default {
     const toast = useToast()
 
     return {
+      schema,
       username,
       oldPassword,
       newPassword,
@@ -85,13 +98,22 @@ export default {
     }
   },
   methods: {
-    async handleUpdate() {
-      console.log()
+    setSchema() {
+      // TODO: add custom condition for bill here
+      this.schema = yup.object({
+        oldPassword: yup.string().required('Password is required').min(6, 'Password minimum 6 characters')  ,
+        newPassword: yup.string().required('Password is required')
+        .min(6, 'Password minimum 6 characters'),
+      })
+    },
+    async handleUpdate(value) {
+      console.log(value)
       try {
-        const response = await changePassword({oldPassword:this.oldPassword,newPassword:this.newPassword})
+        const response = await changePassword(value)
         this.toast.success('Success')
         this.oldPassword = ""
         this.newPassword = ""
+        this.$refs.myForm.resetForm()
         // this.$store.dispatch('setSchedules', response)
         // console.log(this.$store.getters.schedules)
         // console.log(this.reformatedSubject)
@@ -104,6 +126,7 @@ export default {
   },
   created() {
     this.username = getUserName()
+    this.setSchema()
   }
 }
 </script>

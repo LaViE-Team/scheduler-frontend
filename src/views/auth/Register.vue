@@ -128,13 +128,13 @@ export default {
       // TODO: add custom condition for bill here
       this.schema = yup.object({
         username: yup.string().required('User name is required'),
-        password: yup.string().required('password is required'),
-        // .min(8, 'password is required'),
+        password: yup.string().required('password is required')
+        .min(6, 'Password minimum 6 characters'),
         confirm_password: yup
           .string()
           .required('confirm password is required')
-          .oneOf([yup.ref('password'), null], "Passwords don't match!"),
-        // .min(8, 'password is required'),
+          .oneOf([yup.ref('password'), null], "Passwords don't match!")
+          .min(6, 'Password minimum 6 characters'),
       })
     },
     async onSubmit(values) {
