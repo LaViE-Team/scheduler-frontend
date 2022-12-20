@@ -90,6 +90,8 @@ export default {
       try {
         const response = await changePassword({oldPassword:this.oldPassword,newPassword:this.newPassword})
         this.toast.success('Success')
+        this.oldPassword = ""
+        this.newPassword = ""
         // this.$store.dispatch('setSchedules', response)
         // console.log(this.$store.getters.schedules)
         // console.log(this.reformatedSubject)
