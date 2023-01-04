@@ -6,6 +6,7 @@
       <CRow class="d-flex mb-4">
         <CCol xs="7" class="d-grid gap-2 d-md-flex justify-content-md-start">
           <CButton @click="newSchedule()" color="success">New Schedule</CButton>
+          <CButton @click="editSchedule()" color="warning">Edit Schedule</CButton>
         </CCol>
         <CCol xs="5" class="d-grid gap-2 d-md-flex justify-content-md-end">
           <CDropdown color="primary">
@@ -53,6 +54,7 @@ import { computed } from 'vue'
 import DataTable from '@/components/Common/DataTable.vue'
 import { CButton } from '@coreui/vue'
 import { exportTimtable, generateTimtable } from '@/services/timetable'
+import { updateData } from '@/services/schedule'
 import store from '@/store'
 
 export default {
@@ -282,8 +284,12 @@ export default {
         console.error(error)
       }
     },
-    newSchedule() {
-      // this.$store.dispatch('deleteAllSubject')
+    editSchedule() {
+      this.$router.push({ name: 'SubjectInfo' })
+    },
+    async newSchedule() {
+      // await updateData([])
+      this.$store.dispatch('deleteAllSubject')
       this.$router.push({ name: 'SubjectInfo' })
     },
   },
