@@ -283,7 +283,7 @@ export default {
       }
     },
     newSchedule() {
-      this.$store.dispatch('deleteAllSubject')
+      // this.$store.dispatch('deleteAllSubject')
       this.$router.push({ name: 'SubjectInfo' })
     },
   },

@@ -98,7 +98,7 @@ import { Form } from 'vee-validate'
 import DataTable from '@/components/Common/DataTable.vue'
 import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
 import EditClassModal from '@/components/Modals/EditClassModal.vue'
-import { uploadCsv, exportSchedule, getDatas, downloadSample } from '@/services/schedule'
+import { uploadCsv, exportSchedule, getDatas, downloadSample, updateData } from '@/services/schedule'
 import { useToast } from 'vue-toastification'
 
 export default {
@@ -181,7 +181,7 @@ export default {
       try {
         const response = await uploadCsv(formData)
         // console.log(response)
-        this.$store.dispatch('setAllSubjects', response)
+        await this.$store.dispatch('setAllSubjects', response)
         this.toast.success('Upload Success')
         this.$refs.selected.refreshOptions();
         // console.log(this.$store.getters.allSubjects)
@@ -213,6 +213,7 @@ export default {
       return data
     },
     handleAdd() {
+      // console.log(this.subject)
       if (this.subject) {
         const result = this.allSubjects.filter((obj) => {
           return obj.subjectCode == this.subject
@@ -267,6 +268,7 @@ export default {
         const response = await exportSchedule(subjectCodes)
 
         this.$store.dispatch('setSchedules', response)
+        // await updateData([])
         // console.log(this.$store.getters.schedules)
         // console.log(this.reformatedSubject)
       } finally {

@@ -4,7 +4,7 @@
       <CCol v-for="timetable in timetables" xs class="mt-4 d-flex justify-content-md-center">
         <CCard class="w-75">
           <CCardBody class="text-center">
-            <CCardTitle>Schedule {{ timetable.id }}</CCardTitle>
+            <CCardTitle>{{ timetable.schedule_file }}</CCardTitle>
             <font-awesome-icon icon="fa-solid fa-file-excel" size="9x" />
           </CCardBody>
           <CCardFooter
