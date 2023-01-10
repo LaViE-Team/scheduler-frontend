@@ -9,26 +9,26 @@ export function generateTimtable(data) {
 }
 
 export function exportTimtable(data) {
-    return request({
-      url: '/timetable/export-timetable',
-      method: 'post',
-      data: data,
-      responseType: 'blob',
-    })
+  return request({
+    url: '/timetable/export-timetable',
+    method: 'post',
+    data: data,
+    responseType: 'blob',
+  })
 }
 
 export function getExportedTimtables() {
-    return request({
-      url: '/timetable/get-exported-timetables',
-      method: 'get',
-    })
+  return request({
+    url: '/timetable/get-exported-timetables',
+    method: 'get',
+  })
 }
 
 export function downloadTimetable(params) {
-    return request({
-      url: '/timetable/download-timetable',
-      method: 'get',
-      params: params,
-      responseType: 'blob',
-    })
+  return request({
+    url: '/timetable/download-timetable',
+    method: 'get',
+    params: params,
+    responseType: 'blob',
+  })
 }

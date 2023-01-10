@@ -36,10 +36,10 @@ export default {
     }
   },
   methods: {
-    logout() {
+    async logout() {
+      await removeAccessToken()
+      await removeUserName()
       this.$router.push({ name: 'Login' })
-      removeAccessToken()
-      removeUserName()
     },
   },
   created() {

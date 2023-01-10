@@ -1,7 +1,11 @@
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
 import { useToast } from 'vue-toastification'
-import { getAccessToken, removeAccessToken, removeUserName } from '@/utils/cookies'
+import {
+  getAccessToken,
+  removeAccessToken,
+  removeUserName,
+} from '@/utils/cookies'
 import Router from '@/router'
 
 const toast = useToast()

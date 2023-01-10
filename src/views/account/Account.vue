@@ -2,7 +2,13 @@
   <div>
     <CCard class="p-5">
       <CCardBody>
-        <Form ref="myForm" as="CForm" v-slot="{ errors }" @submit="handleUpdate" :validation-schema="schema">
+        <Form
+          ref="myForm"
+          as="CForm"
+          v-slot="{ errors }"
+          @submit="handleUpdate"
+          :validation-schema="schema"
+        >
           <CRow class="mb-3 justify-content-center">
             <CFormLabel class="col-sm-2 col-form-label fw-semibold">
               Username
@@ -49,11 +55,7 @@
           </CRow>
           <CRow class="my-4 justify-content-center">
             <div class="col-sm-7 text-center">
-              <CButton
-                type="submit"
-                color="primary"
-                class="min-update-width"
-              >
+              <CButton type="submit" color="primary" class="min-update-width">
                 Update
               </CButton>
             </div>
@@ -99,9 +101,14 @@ export default {
     setSchema() {
       // TODO: add custom condition for bill here
       this.schema = yup.object({
-        oldPassword: yup.string().required('Password is required').min(6, 'Password minimum 6 characters')  ,
-        newPassword: yup.string().required('Password is required')
-        .min(6, 'Password minimum 6 characters'),
+        oldPassword: yup
+          .string()
+          .required('Password is required')
+          .min(6, 'Password minimum 6 characters'),
+        newPassword: yup
+          .string()
+          .required('Password is required')
+          .min(6, 'Password minimum 6 characters'),
       })
     },
     async handleUpdate(value) {
@@ -109,9 +116,9 @@ export default {
       try {
         const response = await changePassword(value)
         this.toast.success('Success')
-        this.oldPassword = ""
-        this.newPassword = ""
-        
+        this.oldPassword = ''
+        this.newPassword = ''
+
         // this.$store.dispatch('setSchedules', response)
         // console.log(this.$store.getters.schedules)
         // console.log(this.reformatedSubject)
@@ -124,7 +131,7 @@ export default {
   created() {
     this.username = getUserName()
     this.setSchema()
-  }
+  },
 }
 </script>
 

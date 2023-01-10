@@ -30,16 +30,16 @@
             <CRow>
               <CCol xs="8" class="d-grid gap-2 d-md-flex justify-content-md-end"
                 ><Multiselect
-                    ref="selected"
-                    v-model="subject"
-                    :options="getSubject"
-                    searchable
-                    mode="single"
-                    :filter-results="false"
-                    :minChars="0"
-                    :delay="500"
-                    noOptionsText=""
-                    noResultsText="" /><CButton
+                  ref="selected"
+                  v-model="subject"
+                  :options="getSubject"
+                  searchable
+                  mode="single"
+                  :filter-results="false"
+                  :minChars="0"
+                  :delay="500"
+                  noOptionsText=""
+                  noResultsText="" /><CButton
                   ><font-awesome-icon
                     @click="handleAdd"
                     icon="fa-solid fa-plus" /></CButton
@@ -94,17 +94,24 @@
 import { ref } from '@vue/reactivity'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import { Form } from 'vee-validate'
+import { Form, Field } from 'vee-validate'
 import DataTable from '@/components/Common/DataTable.vue'
 import EditSubjectModal from '@/components/Modals/EditSubjectModal.vue'
 import EditClassModal from '@/components/Modals/EditClassModal.vue'
-import { uploadCsv, exportSchedule, getDatas, downloadSample, updateData } from '@/services/schedule'
+import {
+  uploadCsv,
+  exportSchedule,
+  getDatas,
+  downloadSample,
+  updateData,
+} from '@/services/schedule'
 import { useToast } from 'vue-toastification'
 
 export default {
   name: 'Schedule',
   components: {
     Form,
+    Field,
     DataTable,
     EditSubjectModal,
     EditClassModal,
@@ -159,7 +166,7 @@ export default {
         // console.log(this.reformatedSubject)
         // console.log(this.allSubjects)
         this.datas = this.reformatedSubject
-        this.$refs.selected.refreshOptions();
+        this.$refs.selected.refreshOptions()
       } finally {
         this.isLoading = false
         //this.$router.push({ name: 'SubjectInfo' })
@@ -176,19 +183,32 @@ export default {
     async uploadFile() {
       this.isLoading = true
       this.file = this.$refs.file.files[0]
-      let formData = new FormData()
-      formData.append('file', this.file)
-      try {
-        const response = await uploadCsv(formData)
-        // console.log(response)
-        await this.$store.dispatch('setAllSubjects', response)
-        this.toast.success('Upload Success')
-        this.$refs.selected.refreshOptions();
-        // console.log(this.$store.getters.allSubjects)
-        this.datas = this.reformatedSubject
-      } finally {
-        this.isLoading = false
-        //this.$router.push({ name: 'SubjectInfo' })
+      console.log(this.file.type)
+      if (
+        this.file.type == 'text/csv' ||
+        this.file.type ==
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+        this.file.type == 'application/vnd.ms-excel'
+      ) {
+        let formData = new FormData()
+        formData.append('file', this.file)
+        try {
+          await uploadCsv(formData)
+          // console.log(response)
+          // await this.$store.dispatch('setAllSubjects', response)
+          const response = await getDatas()
+
+          this.$store.dispatch('setAllSubjects', response)
+          this.toast.success('Upload Success')
+          this.$refs.selected.refreshOptions()
+          // console.log(this.$store.getters.allSubjects)
+          this.datas = this.reformatedSubject
+        } finally {
+          this.isLoading = false
+          //this.$router.push({ name: 'SubjectInfo' })
+        }
+      } else {
+        this.toast.error('File must be .csv, .xls, .xlsx')
       }
     },
     async getSubject(keyword = '') {
@@ -207,7 +227,14 @@ export default {
       var data = []
       this.allSubjects.forEach((obj) => {
         var subName = obj.subjectName.toUpperCase()
-        if (subName.search(filter) >= 0 && !this.subjects.map(e => {return e.subjectCode} ).includes(obj.subjectCode))
+        if (
+          subName.search(filter) >= 0 &&
+          !this.subjects
+            .map((e) => {
+              return e.subjectCode
+            })
+            .includes(obj.subjectCode)
+        )
           data.push({ value: obj.subjectCode, label: obj.subjectName })
       })
       return data
@@ -220,13 +247,13 @@ export default {
         })
         this.$store.dispatch('addSubject', result[0])
         this.datas = this.reformatedSubject
-        this.$refs.selected.clear();
-        this.$refs.selected.refreshOptions();
+        this.$refs.selected.clear()
+        this.$refs.selected.refreshOptions()
       } else {
         this.$store.dispatch('setSubjectName', this.key)
         this.$store.dispatch('setEditedSubjectID', '')
         this.$store.dispatch('setEditedSubject', null)
-        
+
         this.toggleEditSubject()
         // console.log(this.key)
       }
@@ -234,12 +261,12 @@ export default {
     async downloadsample() {
       try {
         const response = await downloadSample()
-        var fileURL = window.URL.createObjectURL(new Blob([response]));
-        var fileLink = document.createElement('a');
-        fileLink.href = fileURL;
-        fileLink.setAttribute('download', 'sample.csv');
-        document.body.appendChild(fileLink);
-        fileLink.click();
+        var fileURL = window.URL.createObjectURL(new Blob([response]))
+        var fileLink = document.createElement('a')
+        fileLink.href = fileURL
+        fileLink.setAttribute('download', 'sample.csv')
+        document.body.appendChild(fileLink)
+        fileLink.click()
       } catch (error) {
         console.log(error)
       }
@@ -255,7 +282,7 @@ export default {
     handleDelete(subject) {
       this.$store.dispatch('deleteSubject', subject.subjectCode)
       this.datas = this.reformatedSubject
-      this.$refs.selected.refreshOptions();
+      this.$refs.selected.refreshOptions()
       // console.log(this.$store.getters.allSubjects)
       // console.log(this.subjects)
       // console.log(subject)
@@ -290,7 +317,7 @@ export default {
     await this.setDatas()
     this.setColumns()
     this.setQueries()
-    
+
     this.$watch(
       () => {
         this.key

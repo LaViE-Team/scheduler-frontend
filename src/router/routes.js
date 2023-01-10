@@ -41,6 +41,11 @@ const routes = [
         name: 'Account',
         component: () => import('@/views/account/Account.vue'),
       },
+      {
+        path: '/share',
+        name: 'Share',
+        component: () => import('@/views/share/Share.vue'),
+      },
     ],
   },
   {

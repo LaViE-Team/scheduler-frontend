@@ -31,7 +31,6 @@ export function getDatas() {
   })
 }
 
-
 export function exportSchedule(data) {
   return request({
     url: '/timetable/generate-timetable',

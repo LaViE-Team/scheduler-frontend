@@ -159,7 +159,7 @@ export default {
       } else {
         this.data = {
           ...this.data,
-          subjectCode : this.subjectCode
+          subjectCode: this.subjectCode,
         }
         await this.$store.dispatch('addSubject', this.data)
         // console.log(this.$store.getters.allSubjects)
@@ -173,9 +173,7 @@ export default {
         }
         this.$emit('resetHandleGetData')
         this.emitClose()
-
       }
-      
     },
   },
   created() {

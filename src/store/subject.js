@@ -147,17 +147,18 @@ export default {
       state.editedSubjectID = value
     },
     setEditedSubject(state, value) {
-      if(value) {
-        const index = state.subjects.findIndex((obj) => obj.subjectCode == value)
-        state.editedSubject = JSON.parse(JSON.stringify(state.subjects[index])) 
+      if (value) {
+        const index = state.subjects.findIndex(
+          (obj) => obj.subjectCode == value,
+        )
+        state.editedSubject = JSON.parse(JSON.stringify(state.subjects[index]))
       } else {
         state.editedSubject = {
           subjectName: state.subjectName,
-          classes:[]
+          classes: [],
         }
       }
-      
-      
+
       // Object.assign(state.editedSubject, state.subjects[index]);
       // state.editedSubject = state.subjects[index]
     },
@@ -174,22 +175,21 @@ export default {
     editClass(state, value) {
       // console.log(state.editedSubject)
       // if(Object.keys(state.editedSubject) > 0){
-        const index = state.editedSubject.classes.findIndex(
-          (obj) => obj.classCode === value.classCode,
-        )
-        if (index > -1) {
-          state.editedSubject.classes[index] = value.new
-        } else {
-          state.editedSubject.classes.push(value.new)
-        }
+      const index = state.editedSubject.classes.findIndex(
+        (obj) => obj.classCode === value.classCode,
+      )
+      if (index > -1) {
+        state.editedSubject.classes[index] = value.new
+      } else {
+        state.editedSubject.classes.push(value.new)
+      }
       // } else {
       //   state.editedSubject.classes.push(value.new)
       // }
-      
     },
     addSubject(state, value) {
       state.subjects.push(value)
-      const newValue = JSON.parse(JSON.stringify(value)) 
+      const newValue = JSON.parse(JSON.stringify(value))
       state.allSubjects.push(newValue)
     },
     editSubject(state, value) {
@@ -203,15 +203,13 @@ export default {
       state.allSubjects[index1] = value
     },
     deleteSubject(state, value) {
-      const index = state.subjects.findIndex(
-        (obj) => obj.subjectCode == value,
-      )
+      const index = state.subjects.findIndex((obj) => obj.subjectCode == value)
       // console.log(index)
       state.subjects.splice(index, 1)
     },
-    deleteAllSubject(state){
+    deleteAllSubject(state) {
       state.subjects = []
-    }
+    },
   },
   actions: {
     setAllSubjects(context, payload) {

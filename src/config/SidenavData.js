@@ -17,4 +17,10 @@ export default [
     to: '/account',
     icon: 'fa-solid fa-user',
   },
+  {
+    component: 'CNavItem',
+    name: 'Share with me',
+    to: '/share',
+    icon: 'fa-solid fa-people-group',
+  },
 ]

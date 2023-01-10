@@ -2,31 +2,9 @@
   <CCard>
     <CCardBody>
       <!-- Page Title -->
-      <CCardTitle component="h1" class="mb-4 text-center">Schedule</CCardTitle>
-      <CRow class="d-flex mb-4">
-        <CCol xs="7" class="d-grid gap-2 d-md-flex justify-content-md-start">
-          <CButton @click="newSchedule()" color="success">New Schedule</CButton>
-          <CButton @click="editSchedule()" color="warning"
-            >Edit Schedule</CButton
-          >
-        </CCol>
-        <CCol xs="5" class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <CDropdown color="primary">
-            <CDropdownToggle color="primary">{{ type }} </CDropdownToggle>
-            <CDropdownMenu>
-              <CDropdownItem role="button" @click="choosetype(1)"
-                >Type of Schedule</CDropdownItem
-              >
-              <CDropdownItem role="button" @click="choosetype(2)"
-                >High Density</CDropdownItem
-              >
-              <CDropdownItem role="button" @click="choosetype(3)"
-                >Low Density</CDropdownItem
-              >
-            </CDropdownMenu>
-          </CDropdown>
-        </CCol>
-      </CRow>
+      <CCardTitle component="h1" class="mb-4 text-center"
+        >{{ user_name }}'s schedule</CCardTitle
+      >
       <DataTable
         :columns="columns"
         :datas="datas"
@@ -55,9 +33,8 @@ import { useStore } from 'vuex'
 import { computed } from 'vue'
 import DataTable from '@/components/Common/DataTable.vue'
 import { CButton } from '@coreui/vue'
+import { getUserName } from '@/utils/cookies'
 import { exportTimtable, generateTimtable } from '@/services/timetable'
-import { updateData } from '@/services/schedule'
-import store from '@/store'
 
 export default {
   name: 'ScheduleInfo',
@@ -66,35 +43,14 @@ export default {
     CButton,
   },
   setup() {
-    const is_edit = ref(false)
+    const user_name = ref(String)
     const store = useStore()
     const value = ref({})
     const datas = ref([])
     const columns = ref([])
     const queries = ref({})
-    const types = ref([
-      {
-        id: 1,
-        name: 'Type of Schedule',
-        type: 'all',
-      },
-      {
-        id: 2,
-        name: 'High Density',
-        type: 'highDensity',
-      },
-      {
-        id: 3,
-        name: 'Low Density',
-        type: 'lowDensity',
-      },
-    ])
-    const type = ref('Type of Schedule')
 
     return {
-      is_edit,
-      types,
-      type,
       value,
       datas,
       columns,
@@ -115,20 +71,7 @@ export default {
         { data: 'Sun', title: 'Sun' },
       ]
     },
-    choosetype(type) {
-      var typeSchedule = ''
-      this.types.forEach((e) => {
-        if (e.id == type) {
-          typeSchedule = e.type
-          this.type = e.name
-        }
-      })
-
-      this.$router.push({
-        query: { ...this.queries, type: typeSchedule },
-      })
-    },
-    setDatas(page = 0, type = 'all') {
+    setDatas(page = 0) {
       this.datas = [
         {
           time: {
@@ -209,20 +152,87 @@ export default {
           Sun: '',
         },
       ]
-      var schedules = []
-      if (type == 'all' || type == null) {
-        schedules.push(...this.schedules.highDensity)
-        schedules.push(...this.schedules.lowDensity)
-      } else if (type == 'highDensity') {
-        schedules.push(...this.schedules.highDensity)
-      } else if (type == 'lowDensity') {
-        schedules.push(...this.schedules.lowDensity)
-      }
-      console.log(schedules)
-      this.pages = schedules.length
+      var schedules = [
+        [
+          {
+            subjectCode: 'JP1132',
+            subjectName: 'Japanese 3',
+            classCode: '126917',
+            time: [
+              {
+                day: 'Mon',
+                startTime: '08:25',
+                endTime: '10:05',
+              },
+              {
+                day: 'Wed',
+                startTime: '08:25',
+                endTime: '10:05',
+              },
+              {
+                day: 'Thu',
+                startTime: '08:25',
+                endTime: '10:05',
+              },
+            ],
+          },
+          {
+            subjectCode: 'IT2030',
+            subjectName: 'Technical Writing and Presentation',
+            classCode: '126927',
+            time: [
+              {
+                day: 'Mon',
+                startTime: '12:30',
+                endTime: '15:50',
+              },
+            ],
+          },
+          {
+            subjectCode: 'IT2120',
+            subjectName: 'Computer Information',
+            classCode: '126937',
+            time: [
+              {
+                day: 'Mon',
+                startTime: '16:05',
+                endTime: '17:30',
+              },
+            ],
+          },
+          {
+            subjectCode: 'IT2140',
+            subjectName: 'Electric Lab',
+            classCode: '128539',
+            time: [
+              {
+                day: 'Wed',
+                startTime: '06:45',
+                endTime: '08:10',
+              },
+            ],
+          },
+          {
+            subjectCode: 'IT4015',
+            subjectName: 'Security',
+            classCode: '126915',
+            time: [
+              {
+                day: 'Thu',
+                startTime: '12:30',
+                endTime: '15:50',
+              },
+            ],
+          },
+        ],
+      ]
+
+      //   this.pages = schedules.length
+      this.pages = 10
       if (schedules) {
         this.datas.forEach((e) => {
-          schedules[page].forEach((day) => {
+          //   schedules[page].forEach((day) => {
+          schedules[0].forEach((day) => {
             day.time.forEach((time) => {
               if (
                 this.compareTime(time.startTime, e.time.startTime) <= 0 &&
@@ -261,75 +271,53 @@ export default {
       this.queries = this.$route.query
     },
     async clickExport() {
-      const page = this.queries.page ? this.queries.page - 1 : 0
-      const type = this.queries.type
-      var schedules = []
-      if (type == 'all' || type == null) {
-        schedules.push(...this.schedules.highDensity)
-        schedules.push(...this.schedules.lowDensity)
-      } else if (type == 'highDensity') {
-        schedules.push(...this.schedules.highDensity)
-      } else if (type == 'lowDensity') {
-        schedules.push(...this.schedules.lowDensity)
-      }
+      console.log('Export')
+      //   const page = this.queries.page ? this.queries.page - 1 : 0
+      //   var schedules = []
+      //   if (type == 'all' || type == null) {
+      //     schedules.push(...this.schedules.highDensity)
+      //     schedules.push(...this.schedules.lowDensity)
+      //   } else if (type == 'highDensity') {
+      //     schedules.push(...this.schedules.highDensity)
+      //   } else if (type == 'lowDensity') {
+      //     schedules.push(...this.schedules.lowDensity)
+      //   }
 
-      const listClass = schedules[page].map((e) => {
-        return e.classCode
-      })
-      try {
-        const response = await exportTimtable(listClass)
-        var fileURL = window.URL.createObjectURL(new Blob([response]))
-        var fileLink = document.createElement('a')
-        fileLink.href = fileURL
-        fileLink.setAttribute('download', 'schedule.csv')
-        document.body.appendChild(fileLink)
-        fileLink.click()
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    editSchedule() {
-      this.is_edit = true
-      this.$router.push({ name: 'SubjectInfo' })
-    },
-    async newSchedule() {
-      // await updateData([])
-      // this.$store.dispatch('deleteAllSubject')
-      this.$router.push({ name: 'SubjectInfo' })
+      //   const listClass = schedules[page].map((e) => {
+      //     return e.classCode
+      //   })
+      //   try {
+      //     const response = await exportTimtable(listClass)
+      //     var fileURL = window.URL.createObjectURL(new Blob([response]))
+      //     var fileLink = document.createElement('a')
+      //     fileLink.href = fileURL
+      //     fileLink.setAttribute('download', 'schedule.csv')
+      //     document.body.appendChild(fileLink)
+      //     fileLink.click()
+      //   } catch (error) {
+      //     console.error(error)
+      //   }
     },
   },
 
   async created() {
     // console.log(this.schedules.length)
     // if (this.schedules.length == 0) await this.$router.push({ name: 'SubjectInfo' })
+    this.user_name = getUserName()
     this.setColumns()
     this.setDatas()
     this.setQueries()
     this.$watch(
       () => this.$route.query,
       async () => {
-        if (this.$route.name === 'ScheduleInfo') {
+        if (this.$route.name === 'Share') {
           this.setQueries()
           // console.log(this.schedules.highDensity)
           const page = this.queries.page ? this.queries.page - 1 : 0
-          const type = this.queries.type
-          await this.setDatas(page, type)
+          await this.setDatas(page)
         }
       },
     )
-  },
-  async beforeRouteEnter(to, from, next) {
-    const schedules = store.state.subject.schedules
-    if (schedules.length == 0) {
-      return next({ name: 'SubjectInfo' })
-    }
-    return next()
-  },
-  async beforeRouteLeave(to, from) {
-    if (!this.is_edit){
-      await updateData([])
-      this.$store.dispatch('deleteAllSubject')
-    } 
   },
 }
 </script>

@@ -111,8 +111,10 @@ export default {
       // TODO: add custom condition for bill here
       this.schema = yup.object({
         username: yup.string().required('User name is required'),
-        password: yup.string().required('password is required')
-        .min(6, 'Password minimum 6 characters'),
+        password: yup
+          .string()
+          .required('password is required')
+          .min(6, 'Password minimum 6 characters'),
       })
     },
     async onSubmit(values) {
@@ -128,9 +130,10 @@ export default {
 
         if (response) {
           await setAccessToken(response.access_token, {
-            expires: new Date(Date.now() + response.expires_in * 1000),
+            expires: new Date(Date.now() + 3600 * 1000),
+            path: '/',
           })
-
+          console.log(response.expires_in.slice(0, -1))
           setUserName(response.user_info.username)
 
           this.$router.replace({ name: 'Home' })

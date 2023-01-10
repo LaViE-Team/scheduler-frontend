@@ -1,7 +1,11 @@
 <template>
   <div>
     <CRow :xs="{ cols: 1, gutter: 4 }" :md="{ cols: 2 }">
-      <CCol v-for="timetable in timetables" xs class="mt-4 d-flex justify-content-md-center">
+      <CCol
+        v-for="timetable in timetables"
+        xs
+        class="mt-4 d-flex justify-content-md-center"
+      >
         <CCard class="w-75">
           <CCardBody class="text-center">
             <CCardTitle>{{ timetable.schedule_file }}</CCardTitle>
@@ -13,7 +17,16 @@
                 xs="6"
                 class="d-grid gap-2 d-md-flex justify-content-md-start"
               >
-                <p>Export date: {{ new Date(timetable.created_at).toISOString().replace('-', '/').split('T')[0].replace('-', '/') }}</p>
+                <p>
+                  Export date:
+                  {{
+                    new Date(timetable.created_at)
+                      .toISOString()
+                      .replace('-', '/')
+                      .split('T')[0]
+                      .replace('-', '/')
+                  }}
+                </p>
               </CCol>
               <CCol
                 xs="6"
@@ -76,7 +89,7 @@ export default {
         page = page ? page : 1
         const response = await getExportedTimtables()
         this.allTimetables = response
-        this.timetables = this.allTimetables.slice((page-1)*4, page*4)
+        this.timetables = this.allTimetables.slice((page - 1) * 4, page * 4)
         console.log(this.timetables)
       } finally {
         // this.isLoading = false
@@ -84,15 +97,15 @@ export default {
       }
       this.pages = parseInt(this.allTimetables.length / 4) + 1
     },
-    async donwload(id){
+    async donwload(id) {
       try {
-        const response = await downloadTimetable({ file_id: id})
-        var fileURL = window.URL.createObjectURL(new Blob([response]));
-        var fileLink = document.createElement('a');
-        fileLink.href = fileURL;
-        fileLink.setAttribute('download', `schedule${id}.csv`);
-        document.body.appendChild(fileLink);
-        fileLink.click();
+        const response = await downloadTimetable({ file_id: id })
+        var fileURL = window.URL.createObjectURL(new Blob([response]))
+        var fileLink = document.createElement('a')
+        fileLink.href = fileURL
+        fileLink.setAttribute('download', `schedule${id}.csv`)
+        document.body.appendChild(fileLink)
+        fileLink.click()
       } finally {
         // this.isLoading = false
         // this.$router.push({ name: 'ScheduleInfo' })

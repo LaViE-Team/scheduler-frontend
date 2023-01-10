@@ -128,8 +128,10 @@ export default {
       // TODO: add custom condition for bill here
       this.schema = yup.object({
         username: yup.string().required('User name is required'),
-        password: yup.string().required('password is required')
-        .min(6, 'Password minimum 6 characters'),
+        password: yup
+          .string()
+          .required('password is required')
+          .min(6, 'Password minimum 6 characters'),
         confirm_password: yup
           .string()
           .required('confirm password is required')

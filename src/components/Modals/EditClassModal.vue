@@ -44,7 +44,9 @@
                   :key="index"
                   required
                 >
-                  <option v-if="!time[index].day" selected disabled>Select day</option>
+                  <option v-if="!time[index].day" selected disabled>
+                    Select day
+                  </option>
                   <option v-for="option in dayOption" :key="option">
                     {{ option }}
                   </option>
