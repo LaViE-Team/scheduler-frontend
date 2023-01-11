@@ -342,7 +342,7 @@ export default {
   },
   async beforeRouteEnter(to, from, next) {
     const schedules = store.state.subject.schedules
-    if (Object.keys(schedules).length > 0) {
+    if (Object.keys(schedules).length > 0 && from.name != 'ScheduleInfo') {
       return next({ name: 'ScheduleInfo' })
     }
     return next()
