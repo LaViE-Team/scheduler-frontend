@@ -32,12 +32,15 @@
         :datas="datas"
         :pages="pages"
         :queries="queries"
+        moreButton=true
         buttonDone="Export"
+        buttonDone1="Share schedule"
         hideFilters
         hideItemPerPageSelector
         hideIndex
         hideActions
         @clickButton="clickExport"
+        @clickButton1="clickShare"
       >
         <template #column(time)="{ value }">
           <p>
@@ -260,6 +263,9 @@ export default {
     setQueries() {
       this.queries = this.$route.query
     },
+    clickShare() {
+      console.log('share')
+    },
     async clickExport() {
       const page = this.queries.page ? this.queries.page - 1 : 0
       const type = this.queries.type
@@ -293,8 +299,9 @@ export default {
       this.$router.push({ name: 'SubjectInfo' })
     },
     async newSchedule() {
-      // await updateData([])
-      // this.$store.dispatch('deleteAllSubject')
+      await updateData([])
+      this.$store.dispatch('deleteAllSubject')
+      this.$store.dispatch('deleteSchedule')
       this.$router.push({ name: 'SubjectInfo' })
     },
   },
@@ -320,16 +327,16 @@ export default {
   },
   async beforeRouteEnter(to, from, next) {
     const schedules = store.state.subject.schedules
-    if (schedules.length == 0) {
+    if (Object.keys(schedules).length == 0) {
       return next({ name: 'SubjectInfo' })
     }
     return next()
   },
-  async beforeRouteLeave(to, from) {
-    if (!this.is_edit){
-      await updateData([])
-      this.$store.dispatch('deleteAllSubject')
-    } 
-  },
+  // async beforeRouteLeave(to, from) {
+  //   if (!this.is_edit){
+  //     await updateData([])
+  //     this.$store.dispatch('deleteAllSubject')
+  //   } 
+  // },
 }
 </script>

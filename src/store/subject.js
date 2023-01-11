@@ -210,6 +210,9 @@ export default {
     deleteAllSubject(state) {
       state.subjects = []
     },
+    deleteSchedule(state) {
+      state.schedules = []
+    },
   },
   actions: {
     setAllSubjects(context, payload) {
@@ -254,5 +257,8 @@ export default {
     deleteAllSubject(context) {
       return context.commit('deleteAllSubject')
     },
+    deleteSchedule(context) {
+      return context.commit('deleteSchedule')
+    }
   },
 }

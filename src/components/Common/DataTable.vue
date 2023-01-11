@@ -213,8 +213,8 @@
       v-if="!hideItemPerPageSelector || !hidePagination"
       class="d-flex flex-column flex-sm-row"
     >
-      <CCol xs="2"></CCol>
-      <CCol xs="8">
+      <CCol xs="4"></CCol>
+      <CCol xs="4">
         <div class="mt-3 d-flex justify-content-center align-items-center">
           <template v-if="!hidePagination">
             <slot name="pagination">
@@ -227,8 +227,12 @@
           </template>
         </div>
       </CCol>
-      <CCol class="mt-3 d-grid gap-2 d-md-flex justify-content-md-end" xs="2"
-        ><CButton color="info" @click="handleClickButton()">{{
+      <CCol class="mt-3 d-grid gap-2 d-md-flex justify-content-md-end" xs="4"
+        >
+        <CButton v-if="moreButton" color="info" @click="handleClickButton1()">{{
+          buttonDone1
+        }}</CButton>
+        <CButton color="info" @click="handleClickButton()">{{
           buttonDone
         }}</CButton></CCol
       >
@@ -250,7 +254,7 @@ export default {
     TableFilter,
     Pagination,
   },
-  emits: ['viewClick', 'editClick', 'deleteClick', 'clickButton', 'addClick'],
+  emits: ['viewClick', 'editClick', 'deleteClick', 'clickButton', 'addClick' ,'clickButton1'],
   props: {
     columns: {
       type: Array,
@@ -344,6 +348,16 @@ export default {
       required: false,
       default: 'Done',
     },
+    buttonDone1: {
+      type: String,
+      required: false,
+      default: 'Done',
+    },
+    moreButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   setup() {
     const currentPage = ref(1)
@@ -407,6 +421,9 @@ export default {
     },
     handleClickButton() {
       this.$emit('clickButton')
+    },
+    handleClickButton1() {
+      this.$emit('clickButton1')
     },
     handleAddClick() {
       if (this.hasAdd) {

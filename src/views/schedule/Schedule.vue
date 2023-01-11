@@ -12,7 +12,7 @@
               <CDropdownToggle color="primary">Import </CDropdownToggle>
               <CDropdownMenu>
                 <CDropdownItem role="button" @click="chooseFiles()"
-                  >Import File CSV
+                  >Import File CSV, XLS, XLSX
                   <input
                     id="fileUpload"
                     ref="file"
@@ -106,6 +106,7 @@ import {
   updateData,
 } from '@/services/schedule'
 import { useToast } from 'vue-toastification'
+import store from '@/store'
 
 export default {
   name: 'Schedule',
@@ -183,7 +184,6 @@ export default {
     async uploadFile() {
       this.isLoading = true
       this.file = this.$refs.file.files[0]
-      console.log(this.file.type)
       if (
         this.file.type == 'text/csv' ||
         this.file.type ==
@@ -339,6 +339,13 @@ export default {
         }
       },
     )
+  },
+  async beforeRouteEnter(to, from, next) {
+    const schedules = store.state.subject.schedules
+    if (Object.keys(schedules).length > 0) {
+      return next({ name: 'ScheduleInfo' })
+    }
+    return next()
   },
 }
 </script>
