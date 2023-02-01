@@ -58,8 +58,10 @@ export default {
     ],
     subjects: [],
     schedules: [],
+    shareSchedule: [],
     showEditSubjectModal: false,
     showEditClassModal: false,
+    showShareModal: false,
     editedSubjectID: null,
     editedClassCode: null,
     editedSubject: {},
@@ -77,6 +79,9 @@ export default {
     },
     schedules(state) {
       return state.schedules
+    },
+    shareSchedule(state) {
+      return state.shareSchedule
     },
     reformatedSubject(state) {
       let reformatedSubjects = []
@@ -112,6 +117,9 @@ export default {
     showEditClassModal(state) {
       return state.showEditClassModal
     },
+    showShareModal(state) {
+      return state.showShareModal
+    },
     editedSubjectID(state) {
       return state.editedSubjectID
     },
@@ -143,6 +151,9 @@ export default {
     setSchedules(state, value) {
       state.schedules = value
     },
+    setShareSchedule(state, value) {
+      state.shareSchedule = value
+    },
     setEditedSubjectID(state, value) {
       state.editedSubjectID = value
     },
@@ -171,6 +182,9 @@ export default {
     toggleEditClass(state) {
       state.showEditSubjectModal = !state.showEditSubjectModal
       state.showEditClassModal = !state.showEditClassModal
+    },
+    toggleShare(state) {
+      state.showShareModal = !state.showShareModal
     },
     editClass(state, value) {
       // console.log(state.editedSubject)
@@ -227,6 +241,9 @@ export default {
     setSchedules(context, payload) {
       return context.commit('setSchedules', payload)
     },
+    setShareSchedule(context, payload) {
+      return context.commit('setShareSchedule', payload)
+    },
     setEditedSubjectID(context, payload) {
       return context.commit('setEditedSubjectID', payload)
     },
@@ -241,6 +258,9 @@ export default {
     },
     toggleEditClass(context) {
       return context.commit('toggleEditClass')
+    },
+    toggleShare(context) {
+      return context.commit('toggleShare')
     },
     editClass(context, payload) {
       return context.commit('editClass', payload)

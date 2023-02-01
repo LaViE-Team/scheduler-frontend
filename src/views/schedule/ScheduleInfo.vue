@@ -1,55 +1,58 @@
 <template>
-  <CCard>
-    <CCardBody>
-      <!-- Page Title -->
-      <CCardTitle component="h1" class="mb-4 text-center">Schedule</CCardTitle>
-      <CRow class="d-flex mb-4">
-        <CCol xs="7" class="d-grid gap-2 d-md-flex justify-content-md-start">
-          <CButton @click="newSchedule()" color="success">New Schedule</CButton>
-          <CButton @click="editSchedule()" color="warning"
-            >Edit Schedule</CButton
-          >
-        </CCol>
-        <CCol xs="5" class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <CDropdown color="primary">
-            <CDropdownToggle color="primary">{{ type }} </CDropdownToggle>
-            <CDropdownMenu>
-              <CDropdownItem role="button" @click="choosetype(1)"
-                >Type of Schedule</CDropdownItem
-              >
-              <CDropdownItem role="button" @click="choosetype(2)"
-                >High Density</CDropdownItem
-              >
-              <CDropdownItem role="button" @click="choosetype(3)"
-                >Low Density</CDropdownItem
-              >
-            </CDropdownMenu>
-          </CDropdown>
-        </CCol>
-      </CRow>
-      <DataTable
-        :columns="columns"
-        :datas="datas"
-        :pages="pages"
-        :queries="queries"
-        moreButton=true
-        buttonDone="Export"
-        buttonDone1="Share schedule"
-        hideFilters
-        hideItemPerPageSelector
-        hideIndex
-        hideActions
-        @clickButton="clickExport"
-        @clickButton1="clickShare"
-      >
-        <template #column(time)="{ value }">
-          <p>
-            {{ value.startTime + '-' + value.endTime }}
-          </p>
-        </template>
-      </DataTable>
-    </CCardBody>
-  </CCard>
+  <div>
+    <CCard>
+      <CCardBody>
+        <!-- Page Title -->
+        <CCardTitle component="h1" class="mb-4 text-center">Schedule</CCardTitle>
+        <CRow class="d-flex mb-4">
+          <CCol xs="7" class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <CButton @click="newSchedule()" color="success">New Schedule</CButton>
+            <CButton @click="editSchedule()" color="warning"
+              >Edit Schedule</CButton
+            >
+          </CCol>
+          <CCol xs="5" class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <CDropdown color="primary">
+              <CDropdownToggle color="primary">{{ type }} </CDropdownToggle>
+              <CDropdownMenu>
+                <CDropdownItem role="button" @click="choosetype(1)"
+                  >Type of Schedule</CDropdownItem
+                >
+                <CDropdownItem role="button" @click="choosetype(2)"
+                  >High Density</CDropdownItem
+                >
+                <CDropdownItem role="button" @click="choosetype(3)"
+                  >Low Density</CDropdownItem
+                >
+              </CDropdownMenu>
+            </CDropdown>
+          </CCol>
+        </CRow>
+        <DataTable
+          :columns="columns"
+          :datas="datas"
+          :pages="pages"
+          :queries="queries"
+          moreButton=true
+          buttonDone="Export"
+          buttonDone1="Share schedule"
+          hideFilters
+          hideItemPerPageSelector
+          hideIndex
+          hideActions
+          @clickButton="clickExport"
+          @clickButton1="clickShare"
+        >
+          <template #column(time)="{ value }">
+            <p>
+              {{ value.startTime + '-' + value.endTime }}
+            </p>
+          </template>
+        </DataTable>
+      </CCardBody>
+    </CCard>
+    <ShareModal :visible="showShareModal" @close="toggleShare" />
+  </div>
 </template>
 
 <script>
@@ -60,12 +63,14 @@ import DataTable from '@/components/Common/DataTable.vue'
 import { CButton } from '@coreui/vue'
 import { exportTimtable, generateTimtable } from '@/services/timetable'
 import { updateData } from '@/services/schedule'
+import ShareModal from '@/components/Modals/ShareModal.vue'
 import store from '@/store'
 
 export default {
   name: 'ScheduleInfo',
   components: {
     DataTable,
+    ShareModal,
     CButton,
   },
   setup() {
@@ -75,6 +80,7 @@ export default {
     const datas = ref([])
     const columns = ref([])
     const queries = ref({})
+    const schedule = ref([])
     const types = ref([
       {
         id: 1,
@@ -102,7 +108,9 @@ export default {
       datas,
       columns,
       queries,
+      schedule,
       schedules: computed(() => store.getters.schedules),
+      showShareModal: computed(() => store.getters.showShareModal),
     }
   },
   methods: {
@@ -132,6 +140,7 @@ export default {
       })
     },
     setDatas(page = 0, type = 'all') {
+      this.schedule = []
       this.datas = [
         {
           time: {
@@ -221,8 +230,13 @@ export default {
       } else if (type == 'lowDensity') {
         schedules.push(...this.schedules.lowDensity)
       }
-      console.log(schedules)
+      // console.log(schedules[page])
       this.pages = schedules.length
+      schedules[page].forEach((e) => {
+        this.schedule.push(e.classCode)
+        // return e.classCode
+      })
+      // console.log(this.schedule)
       if (schedules) {
         this.datas.forEach((e) => {
           schedules[page].forEach((day) => {
@@ -264,7 +278,8 @@ export default {
       this.queries = this.$route.query
     },
     clickShare() {
-      console.log('share')
+      this.toggleShare()
+      console.log(this.showShareModal)
     },
     async clickExport() {
       const page = this.queries.page ? this.queries.page - 1 : 0
@@ -303,6 +318,11 @@ export default {
       this.$store.dispatch('deleteAllSubject')
       this.$store.dispatch('deleteSchedule')
       this.$router.push({ name: 'SubjectInfo' })
+    },
+    toggleShare() {
+      // console.log(this.schedule)
+      this.$store.dispatch('setShareSchedule', this.schedule)
+      this.$store.dispatch('toggleShare')
     },
   },
 

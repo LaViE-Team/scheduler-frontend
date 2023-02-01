@@ -21,6 +21,7 @@ import avatar from '@/assets/images/avatars/8.jpg'
 // import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
 import { getUserName, removeAccessToken, removeUserName } from '@/utils/cookies'
 import { ref } from '@vue/reactivity'
+import { useStore } from 'vuex'
 
 export default {
   name: 'AppHeader',
@@ -30,15 +31,19 @@ export default {
   },
   setup() {
     const user_name = ref(String)
+    const store = useStore()
+
     return {
       avatar,
       user_name,
+      store,
     }
   },
   methods: {
     async logout() {
       await removeAccessToken()
       await removeUserName()
+      this.$store.dispatch('setSubjects', [])
       this.$router.push({ name: 'Login' })
     },
   },
