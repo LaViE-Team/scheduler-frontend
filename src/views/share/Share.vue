@@ -34,7 +34,7 @@ import { computed } from 'vue'
 import DataTable from '@/components/Common/DataTable.vue'
 import { CButton } from '@coreui/vue'
 import { getUserName } from '@/utils/cookies'
-import { exportTimtable, generateTimtable } from '@/services/timetable'
+import { getShare } from '@/services/share'
 
 export default {
   name: 'ScheduleInfo',
@@ -49,13 +49,14 @@ export default {
     const datas = ref([])
     const columns = ref([])
     const queries = ref({})
+    const schedules = ref([])
 
     return {
       value,
       datas,
       columns,
       queries,
-      schedules: computed(() => store.getters.schedules),
+      schedules,
     }
   },
   methods: {
@@ -70,6 +71,15 @@ export default {
         { data: 'Sat', title: 'Sat' },
         { data: 'Sun', title: 'Sun' },
       ]
+    },
+    async getShare() {
+      try {
+        const response = await getShare()
+        this.schedules = response
+        this.pages = this.schedules.length
+      } finally {
+
+      }
     },
     setDatas(page = 0) {
       this.datas = [
@@ -152,87 +162,87 @@ export default {
           Sun: '',
         },
       ]
-      var schedules = [
-        [
-          {
-            subjectCode: 'JP1132',
-            subjectName: 'Japanese 3',
-            classCode: '126917',
-            time: [
-              {
-                day: 'Mon',
-                startTime: '08:25',
-                endTime: '10:05',
-              },
-              {
-                day: 'Wed',
-                startTime: '08:25',
-                endTime: '10:05',
-              },
-              {
-                day: 'Thu',
-                startTime: '08:25',
-                endTime: '10:05',
-              },
-            ],
-          },
-          {
-            subjectCode: 'IT2030',
-            subjectName: 'Technical Writing and Presentation',
-            classCode: '126927',
-            time: [
-              {
-                day: 'Mon',
-                startTime: '12:30',
-                endTime: '15:50',
-              },
-            ],
-          },
-          {
-            subjectCode: 'IT2120',
-            subjectName: 'Computer Information',
-            classCode: '126937',
-            time: [
-              {
-                day: 'Mon',
-                startTime: '16:05',
-                endTime: '17:30',
-              },
-            ],
-          },
-          {
-            subjectCode: 'IT2140',
-            subjectName: 'Electric Lab',
-            classCode: '128539',
-            time: [
-              {
-                day: 'Wed',
-                startTime: '06:45',
-                endTime: '08:10',
-              },
-            ],
-          },
-          {
-            subjectCode: 'IT4015',
-            subjectName: 'Security',
-            classCode: '126915',
-            time: [
-              {
-                day: 'Thu',
-                startTime: '12:30',
-                endTime: '15:50',
-              },
-            ],
-          },
-        ],
-      ]
+      // var schedules = [
+      //   [
+      //     {
+      //       subjectCode: 'JP1132',
+      //       subjectName: 'Japanese 3',
+      //       classCode: '126917',
+      //       time: [
+      //         {
+      //           day: 'Mon',
+      //           startTime: '08:25',
+      //           endTime: '10:05',
+      //         },
+      //         {
+      //           day: 'Wed',
+      //           startTime: '08:25',
+      //           endTime: '10:05',
+      //         },
+      //         {
+      //           day: 'Thu',
+      //           startTime: '08:25',
+      //           endTime: '10:05',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       subjectCode: 'IT2030',
+      //       subjectName: 'Technical Writing and Presentation',
+      //       classCode: '126927',
+      //       time: [
+      //         {
+      //           day: 'Mon',
+      //           startTime: '12:30',
+      //           endTime: '15:50',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       subjectCode: 'IT2120',
+      //       subjectName: 'Computer Information',
+      //       classCode: '126937',
+      //       time: [
+      //         {
+      //           day: 'Mon',
+      //           startTime: '16:05',
+      //           endTime: '17:30',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       subjectCode: 'IT2140',
+      //       subjectName: 'Electric Lab',
+      //       classCode: '128539',
+      //       time: [
+      //         {
+      //           day: 'Wed',
+      //           startTime: '06:45',
+      //           endTime: '08:10',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       subjectCode: 'IT4015',
+      //       subjectName: 'Security',
+      //       classCode: '126915',
+      //       time: [
+      //         {
+      //           day: 'Thu',
+      //           startTime: '12:30',
+      //           endTime: '15:50',
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // ]
 
       //   this.pages = schedules.length
-      this.pages = 10
-      if (schedules) {
+
+      if (this.schedules) {
         this.datas.forEach((e) => {
-          //   schedules[page].forEach((day) => {
-          schedules[0].forEach((day) => {
+          this.schedules[page].forEach((day) => {
+          // schedules[0].forEach((day) => {
             day.time.forEach((time) => {
               if (
                 this.compareTime(time.startTime, e.time.startTime) <= 0 &&
@@ -303,6 +313,7 @@ export default {
   async created() {
     // console.log(this.schedules.length)
     // if (this.schedules.length == 0) await this.$router.push({ name: 'SubjectInfo' })
+    await this.getShare()
     this.user_name = getUserName()
     this.setColumns()
     this.setDatas()
