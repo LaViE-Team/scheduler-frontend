@@ -10,6 +10,7 @@
         :datas="datas"
         :pages="pages"
         :queries="queries"
+        :isLoading="isLoading"
         buttonDone="Export"
         hideFilters
         hideItemPerPageSelector
@@ -50,6 +51,7 @@ export default {
     const columns = ref([])
     const queries = ref({})
     const schedules = ref([])
+    const isLoading = ref(false);
 
     return {
       value,
@@ -57,6 +59,7 @@ export default {
       columns,
       queries,
       schedules,
+      isLoading,
     }
   },
   methods: {
@@ -74,11 +77,12 @@ export default {
     },
     async getShare() {
       try {
+        this.isLoading = true
         const response = await getShare()
         this.schedules = response
         this.pages = this.schedules.length
       } finally {
-
+        this.isLoading = false
       }
     },
     setDatas(page = 0) {
@@ -239,7 +243,7 @@ export default {
 
       //   this.pages = schedules.length
 
-      if (this.schedules) {
+      if (this.schedules.length > 0) {
         this.datas.forEach((e) => {
           this.schedules[page].forEach((day) => {
           // schedules[0].forEach((day) => {
@@ -258,6 +262,8 @@ export default {
             })
           })
         })
+      } else {
+        this.datas = []
       }
     },
     compareTime(str1, str2) {
