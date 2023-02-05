@@ -198,7 +198,7 @@ export default {
           // await this.$store.dispatch('setAllSubjects', response)
           const response = await getDatas()
 
-          this.$store.dispatch('setAllSubjects', response)
+          await this.$store.dispatch('setAllSubjects', response)
           this.toast.success('Upload Success')
           this.$refs.selected.refreshOptions()
           // console.log(this.$store.getters.allSubjects)

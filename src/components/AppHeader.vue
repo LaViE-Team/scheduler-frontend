@@ -41,9 +41,11 @@ export default {
   },
   methods: {
     async logout() {
-      await removeAccessToken()
-      await removeUserName()
-      this.$store.dispatch('setSubjects', [])
+      removeAccessToken()
+      removeUserName()
+      await this.$store.dispatch('setSubjects', [])
+      this.$store.dispatch('setSchedules', [])
+      this.$store.dispatch('setAllSubjects', [])
       this.$router.push({ name: 'Login' })
     },
   },

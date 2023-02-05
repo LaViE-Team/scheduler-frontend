@@ -21,8 +21,8 @@ export function getUserName() {
   return new Cookies().get(userName)
 }
 
-export function setUserName(token, options = {}) {
-  return new Cookies().set(userName, token, options)
+export function setUserName(token) {
+  return new Cookies().set(userName, token)
 }
 
 export function removeUserName() {

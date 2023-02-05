@@ -119,7 +119,7 @@ export default {
         this.isNew = true
       }
       // console.log(this.data)
-      this.subjectName = this.data.subjectName
+      this.subjectName = this.data.subjectName ? this.data.subjectName : this.$store.getters.subjectName
     },
     emitClose() {
       this.$emit('close')
