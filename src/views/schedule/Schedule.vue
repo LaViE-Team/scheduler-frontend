@@ -314,8 +314,8 @@ export default {
   },
 
   async created() {
+    await this.setColumns()
     await this.setDatas()
-    this.setColumns()
     this.setQueries()
 
     this.$watch(
