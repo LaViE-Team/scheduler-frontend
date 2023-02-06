@@ -46,6 +46,8 @@ export default {
       await this.$store.dispatch('setSubjects', [])
       this.$store.dispatch('setSchedules', [])
       this.$store.dispatch('setAllSubjects', [])
+      this.$store.dispatch('setEditedSubject', null)
+      
       this.$router.push({ name: 'Login' })
     },
   },

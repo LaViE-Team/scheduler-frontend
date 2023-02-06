@@ -200,7 +200,7 @@ export default {
 
           await this.$store.dispatch('setAllSubjects', response)
           this.toast.success('Upload Success')
-          this.$refs.selected.refreshOptions()
+          await this.$refs.selected.refreshOptions()
           // console.log(this.$store.getters.allSubjects)
           this.datas = this.reformatedSubject
         } finally {
