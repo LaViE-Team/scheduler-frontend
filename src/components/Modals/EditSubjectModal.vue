@@ -152,6 +152,8 @@ export default {
             this.toast.success('Success')
           }
         } finally {
+          this.$store.dispatch('setEditedSubject', null)
+          this.$store.dispatch('setSubjectName', '')
           // this.isSubmiting = false
         }
         this.$emit('resetHandleGetData')
@@ -169,6 +171,8 @@ export default {
             this.toast.success('Success')
           }
         } finally {
+          this.$store.dispatch('setEditedSubject', null)
+          this.$store.dispatch('setSubjectName', '')
           // this.isSubmiting = false
         }
         this.$emit('resetHandleGetData')
